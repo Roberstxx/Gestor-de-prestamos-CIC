@@ -37,7 +37,8 @@ cd tu_repositorio
 #### En Windows:
 ```bash
 python -m venv venv
-.env\Scriptsctivate
+.\venv\Scripts\activate
+
 ```
 
 #### En macOS / Linux:
