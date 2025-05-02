@@ -130,6 +130,6 @@ pip install -r requirements.txt
 
 ---
 
-## ✅ Todo listo
+## ✅ Todo listo 
 
-Con esto cualquier persona puede clonar tu proyecto y ejecutarlo de forma local, incluyendo importar la base de datos desde phpMyAdmin. ¡Éxito!
+
