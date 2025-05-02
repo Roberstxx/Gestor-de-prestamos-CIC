@@ -1,0 +1,303 @@
+/* Importa la fuente Montserrat desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+/* Estilos generales para todos los elementos */
+*{
+    margin: 0; /* Elimina el margen predeterminado de los elementos */
+    padding: 0; /* Elimina el relleno predeterminado de los elementos */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho y alto total de un elemento */
+    font-family: 'Montserrat', sans-serif; /* Establece la fuente de texto para toda la página */
+}
+
+/* Estilos para el cuerpo de la página */
+body{
+    background-color: #c9d6ff; /* Establece un color de fondo de respaldo */
+    background: linear-gradient(to right, #e2e2e2, #c9d6ff); /* Aplica un degradado lineal como fondo */
+    display: flex; /* Utiliza Flexbox para el diseño */
+    align-items: center; /* Centra los elementos verticalmente en el contenedor flex */
+    justify-content: center; /* Centra los elementos horizontalmente en el contenedor flex */
+    flex-direction: column; /* Organiza los elementos del contenedor flex en una columna */
+    height: 100vh; /* Establece la altura del cuerpo al 100% de la altura de la ventana */
+}
+
+/* Estilos para el contenedor principal del formulario */
+.container{
+    background-color: #fff; /* Establece el color de fondo del contenedor a blanco */
+    border-radius: 30px; /* Aplica bordes redondeados al contenedor */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35); /* Aplica una sombra al contenedor */
+    position: relative; /* Permite posicionar elementos hijos de forma absoluta dentro de este */
+    overflow: hidden; /* Oculta cualquier contenido que se desborde del contenedor */
+    width: 768px; /* Establece un ancho fijo para el contenedor */
+    max-width: 100%; /* Asegura que el contenedor no sea más ancho que su contenedor padre */
+    min-height: 480px; /* Establece una altura mínima para el contenedor */
+}
+
+/* Estilos para los párrafos dentro del contenedor */
+.container p{
+    font-size: 14px; /* Establece el tamaño de la fuente */
+    line-height: 20px; /* Establece la altura de la línea */
+    letter-spacing: 0.3px; /* Establece el espaciado entre letras */
+    margin: 20px 0; /* Establece márgenes superior e inferior */
+}
+
+/* Estilos para los elementos span dentro del contenedor */
+.container span{
+    font-size: 12px; /* Establece el tamaño de la fuente */
+}
+
+/* Estilos para los enlaces (<a>) dentro del contenedor */
+.container a{
+    color: #333; /* Establece el color del texto */
+    font-size: 13px; /* Establece el tamaño de la fuente */
+    text-decoration: none; /* Elimina la decoración de texto (subrayado) */
+    margin: 15px 0 10px; /* Establece márgenes superior, derecho, inferior e izquierdo */
+}
+
+/* Estilos para los botones dentro del contenedor */
+.container button{
+    background-color: #ecd822; /* Establece el color de fondo del botón */
+    color: #464c52; /* Establece el color del texto del botón */
+    font-size: 12px; /* Establece el tamaño de la fuente */
+    padding: 10px 45px; /* Establece el relleno interior del botón */
+    border: 1px solid transparent; /* Establece un borde transparente */
+    border-radius: 8px; /* Aplica bordes redondeados al botón */
+    font-weight: 600; /* Establece el grosor de la fuente */
+    letter-spacing: 0.5px; /* Establece el espaciado entre letras */
+    text-transform: uppercase; /* Convierte el texto a mayúsculas */
+    margin-top: 10px; /* Establece un margen superior */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+}
+
+/* Estilos para los botones con la clase "hidden" dentro del contenedor */
+.container button.hidden{
+    background-color: transparent; /* Establece el fondo transparente */
+    border-color: #fff; /* Establece el color del borde a blanco */
+}
+
+/* Estilos para los formularios dentro del contenedor */
+.container form{
+    background-color: #fff; /* Establece el color de fondo del formulario a blanco */
+    display: flex; /* Utiliza Flexbox para el diseño */
+    align-items: center; /* Centra los elementos verticalmente */
+    justify-content: center; /* Centra los elementos horizontalmente */
+    flex-direction: column; /* Organiza los elementos en columna */
+    padding: 0 40px; /* Establece el relleno interior */
+    height: 100%; /* Establece la altura al 100% de su contenedor padre */
+}
+
+/* Estilos para los campos de entrada (input) dentro del contenedor */
+.container input{
+    background-color: #eee; /* Establece el color de fondo del input */
+    border: none; /* Elimina el borde */
+    margin: 8px 0; /* Establece márgenes superior e inferior */
+    padding: 10px 15px; /* Establece el relleno interior */
+    font-size: 13px; /* Establece el tamaño de la fuente */
+    border-radius: 8px; /* Aplica bordes redondeados */
+    width: 100%; /* Establece el ancho al 100% de su contenedor padre */
+    outline: none; /* Elimina el contorno al enfocar el input */
+}
+
+/* Estilos para el contenedor de los formularios (sign-in y sign-up) */
+.form-container{
+    position: absolute; /* Permite posicionar el formulario de forma absoluta */
+    top: 0; /* Lo alinea a la parte superior de su contenedor padre */
+    height: 100%; /* Establece la altura al 100% de su contenedor padre */
+    transition: all 0.6s ease-in-out; /* Aplica una transición suave a todas las propiedades */
+}
+
+/* Estilos para el contenedor del formulario de inicio de sesión */
+.sign-in{
+    left: 0; /* Lo alinea a la izquierda de su contenedor padre */
+    width: 50%; /* Establece el ancho al 50% de su contenedor padre */
+    z-index: 2; /* Establece el orden de apilamiento */
+}
+
+/* Estilos para el contenedor del formulario de inicio de sesión cuando el contenedor principal tiene la clase "active" */
+.container.active .sign-in{
+    transform: translateX(100%); /* Lo desplaza hacia la derecha en un 100% de su ancho */
+}
+
+/* Estilos para el contenedor del formulario de registro */
+.sign-up{
+    left: 0; /* Lo alinea a la izquierda de su contenedor padre */
+    width: 50%; /* Establece el ancho al 50% de su contenedor padre */
+    opacity: 0; /* Lo hace inicialmente invisible */
+    z-index: 1; /* Establece el orden de apilamiento */
+}
+
+/* Estilos para el contenedor del formulario de registro cuando el contenedor principal tiene la clase "active" */
+.container.active .sign-up{
+    transform: translateX(100%); /* Lo desplaza hacia la derecha en un 100% de su ancho */
+    opacity: 1; /* Lo hace visible */
+    z-index: 5; /* Establece el orden de apilamiento */
+    animation: move 0.6s; /* Aplica una animación llamada "move" */
+}
+
+/* Definición de la animación "move" */
+@keyframes move{
+    0%, 49.99%{ /* En el 0% y justo antes del 50% */
+        opacity: 0; /* Lo hace invisible */
+        z-index: 1; /* Establece el orden de apilamiento */
+    }
+    50%, 100%{ /* En el 50% y hasta el 100% */
+        opacity: 1; /* Lo hace visible */
+        z-index: 5; /* Establece el orden de apilamiento */
+    }
+}
+
+/* Estilos para el contenedor de los iconos sociales */
+.social-icons{
+    margin: 20px 0; /* Establece márgenes superior e inferior */
+}
+
+/* Estilos para los enlaces de los iconos sociales */
+.social-icons a{
+    border: 1px solid #ccc; /* Establece un borde */
+    border-radius: 20%; /* Aplica bordes ligeramente redondeados */
+    display: inline-flex; /* Utiliza Flexbox para los elementos en línea */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    margin: 0 3px; /* Establece márgenes horizontal */
+    width: 40px; /* Establece el ancho */
+    height: 40px; /* Establece la altura */
+}
+
+/* Estilos para el contenedor del interruptor (toggle) */
+.toggle-container{
+    position: absolute; /* Permite posicionar el interruptor de forma absoluta */
+    top: 0; /* Lo alinea a la parte superior */
+    left: 50%; /* Lo alinea al 50% desde la izquierda */
+    width: 50%; /* Establece el ancho al 50% */
+    height: 100%; /* Establece la altura al 100% */
+    overflow: hidden; /* Oculta el contenido que se desborda */
+    transition: all 0.6s ease-in-out; /* Aplica una transición suave */
+    border-radius: 150px 0 0 100px; /* Aplica bordes redondeados asimétricos */
+    z-index: 1000; /* Establece un orden de apilamiento alto */
+}
+
+/* Estilos para el contenedor del interruptor cuando el contenedor principal tiene la clase "active" */
+.container.active .toggle-container{
+    transform: translateX(-100%); /* Lo desplaza hacia la izquierda en un 100% */
+    border-radius: 0 150px 100px 0; /* Cambia los bordes redondeados */
+}
+
+/* Estilos para el panel del interruptor */
+.toggle{
+    background-color: #0b57ad; /* Establece un color de fondo de respaldo */
+    height: 100%; /* Establece la altura al 100% */
+    background: linear-gradient(to right, #3d55dd, #112bb9); /* Aplica un degradado lineal */
+    color: #fff; /* Establece el color del texto a blanco */
+    position: relative; /* Permite posicionar elementos hijos */
+    left: -100%; /* Lo desplaza inicialmente hacia la izquierda */
+    width: 200%; /* Establece un ancho del 200% para el efecto de deslizamiento */
+    transform: translateX(0); /* Lo devuelve a su posición inicial */
+    transition: all 0.6s ease-in-out; /* Aplica una transición suave */
+}
+
+/* Estilos para el panel del interruptor cuando el contenedor principal tiene la clase "active" */
+.container.active .toggle{
+    transform: translateX(50%); /* Lo desplaza hacia la derecha en un 50% */
+}
+
+/* Estilos para los paneles izquierdo y derecho del interruptor */
+.toggle-panel{
+    position: absolute; /* Permite posicionar los paneles de forma absoluta */
+    width: 50%; /* Establece el ancho al 50% */
+    height: 100%; /* Establece la altura al 100% */
+    display: flex; /* Utiliza Flexbox */
+    align-items: center; /* Centra verticalmente */
+    justify-content: center; /* Centra horizontalmente */
+    flex-direction: column; /* Organiza en columna */
+    padding: 0 30px; /* Establece el relleno */
+    text-align: center; /* Centra el texto */
+    top: 0; /* Lo alinea a la parte superior */
+    transform: translateX(0); /* Posición inicial */
+    transition: all 0.6s ease-in-out; /* Transición suave */
+}
+
+/* Estilos para el panel izquierdo del interruptor */
+.toggle-left{
+    transform: translateX(-200%); /* Lo desplaza inicialmente hacia la izquierda */
+}
+
+/* Estilos para el panel izquierdo del interruptor cuando el contenedor principal tiene la clase "active" */
+.container.active .toggle-left{
+    transform: translateX(0); /* Lo devuelve a su posición */
+}
+
+/* Estilos para el panel derecho del interruptor */
+.toggle-right{
+    right: 0; /* Lo alinea a la derecha */
+    transform: translateX(0); /* Posición inicial */
+}
+
+/* Estilos para el panel derecho del interruptor cuando el contenedor principal tiene la clase "active" */
+.container.active .toggle-right{
+    transform: translateX(200%); /* Lo desplaza hacia la derecha */
+}
+
+/* Estilos específicos para los botones dentro de los paneles del interruptor */
+.toggle-container .toggle-panel button {
+    color: #fff; /* Asegura que el color del texto de los botones dentro del panel de animación sea blanco */
+}
+
+
+
+
+
+/* ... tus estilos existentes ... */
+
+/* Estilos para el contenedor del selector de tipo de usuario */
+.form-container.sign-up > form > div {
+    width: 100%; /* Ocupa todo el ancho del formulario */
+    margin-bottom: 10px; /* Espacio debajo del selector */
+    display: flex; /* Para alinear la etiqueta y el select */
+    flex-direction: column; /* Apila la etiqueta y el select */
+}
+
+.form-container.sign-up > form > div > label {
+    font-size: 14px;
+    color: #333; /* Color del texto de la etiqueta */
+    margin-bottom: 5px; /* Espacio debajo de la etiqueta */
+    text-align: left; /* Alinea el texto de la etiqueta a la izquierda */
+}
+
+/* Estilos para el selector de tipo de usuario */
+.form-container.sign-up > form > div > select {
+    background-color: #eee;
+    border: none;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+    outline: none;
+    /* Añade estilos para el focus (cuando el select está seleccionado) */
+    transition: border-color 0.2s ease-in-out;
+}
+
+.form-container.sign-up > form > div > select:focus {
+    border-color: #ecd822; /* Un color similar al botón activo */
+}
+
+/* Estilos para el contenedor del campo de la llave de administrador */
+#adminKeyField {
+    width: 100%; /* Ocupa todo el ancho del formulario */
+    margin-bottom: 10px; /* Espacio debajo del campo */
+}
+
+/* Estilos para el input de la llave de administrador */
+#adminKeyField > input[type="text"] {
+    background-color: #eee;
+    border: none;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+    outline: none;
+    /* Añade estilos para el focus */
+    transition: border-color 0.2s ease-in-out;
+}
+
+#adminKeyField > input[type="text"]:focus {
+    border-color: #ecd822; /* Un color similar al botón activo */
+}
