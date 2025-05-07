@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #d8ecff; /* Azul claro */
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-top: 30px;
+      font-size: 2rem;
+      color: #1c1c1c;
+    }
+
+    .menu {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    .card {
+      background-color: #f2f2f2; /* gris claro */
+      border: 2px solid #444; /* gris oscuro */
+      border-radius: 20px;
+      width: 220px;
+      height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 15px;
+      transition: transform 0.2s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .card span {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 1.1rem;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .yellow-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #ffd700; /* amarillo brillante */
+      border: 2px solid #444;
+      border-radius: 12px;
+      padding: 8px 18px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .yellow-btn:hover {
+      background-color: #f1c40f;
+    }
+  </style>
+</head>
+<body>
+  <button class="yellow-btn">Atrás</button>
+  <h1>Panel de Administración</h1>
+  <div class="menu">
+    <div class="card">
+      <span>📦</span>
+      <p>Inventario</p>
+    </div>
+    <div class="card">
+      <span>📜</span>
+      <p>Historial de Préstamos</p>
+    </div>
+    <div class="card">
+      <span>👥</span>
+      <p>Perfiles</p>
+    </div>
+    <div class="card">
+      <span>📊</span>
+      <p>Reportes</p>
+    </div>
+    <div class="card">
+      <span>📂</span>
+      <p>Bitácora</p>
+    </div>
+  </div>
+</body>
+</html>
