@@ -1,100 +1,154 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Historial de Préstamos</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f9f9;
-      color: #222;
-      padding: 2rem;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      max-width: 900px;
-      margin: 0 auto 2rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: space-between;
-    }
-    label {
-      flex: 1 1 45%;
-      display: flex;
-      flex-direction: column;
-      font-weight: 500;
-      gap: 0.25rem;
-    }
-    input, select {
-      padding: 0.5rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    .results {
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    .results p {
-      padding: 0.5rem;
-      border-bottom: 1px solid #ddd;
-    }
-    .yellow {
-      background: #FFD700;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: bold;
-      color: #000;
-      display: block;
-      margin: 0 auto;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Préstamos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #87CEEB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ADD8E6;
+            border-radius: 10px;
+            padding: 20px;
+            width: 80%;
+            height: 80%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background-color: #FFD700;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .form-group {
+            margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .filter-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .filter-group {
+            width: 100%;
+        }
+        .filter-group select {
+            width: 100%;
+            height: 40px; /* Aumentando tamaño */
+        }
+        .search-button {
+            background-color: #FFD700;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px; /* Separación de los filtros */
+        }
+        .search-button img {
+            width: 24px;
+            height: 24px;
+        }
+        .report-section {
+            background-color: #E0FFFF;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+        .report-title {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .report-item {
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+        .export-button {
+            background-color: #FFD700;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">Historial de Préstamos</div>
+        <div class="form-group">
+            <label for="fecha-inicio">FECHA INICIO</label>
+            <input type="date" id="fecha-inicio">
+        </div>
+        <div class="form-group">
+            <label for="fecha-fin">FECHA FIN</label>
+            <input type="date" id="fecha-fin">
+        </div>
+        <div class="form-group">
+            <label for="usuario">USUARIO</label>
+            <input type="text" id="usuario" placeholder="Ingrese usuario">
+        </div>
+        <div class="filter-section">
+            <div class="filter-group">
+                <label for="tipo-equipo">TIPO DE EQUIPO</label>
+                <select id="tipo-equipo">
+                    <option value="todos">TODOS</option>
+                    <option value="laptop">Laptop</option>
+                    <option value="hdmi">HDMI</option>
+                    <option value="proyector">Proyector</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="estado">ESTADO</label>
+                <select id="estado">
+                    <option value="devuelto">Devuelto</option>
+                    <option value="pendiente">Pendiente</option>
+                </select>
+            </div>
+            <button class="search-button" onclick="mostrarReportes()">
+                <img src="https://cdn-icons-png.flaticon.com/512/54/54481.png" alt="Buscar">
+            </button>
+        </div>
+        <div id="reportes">
+            <div class="report-section">
+                <div class="report-title">Equipos devueltos</div>
+                <div class="report-item">HDMI - Perla Karime - Devuelto</div>
+            </div>
+            <div class="report-section">
+                <div class="report-title">Equipos pendientes</div>
+                <div class="report-item">Laptop - Heribe Huribe - Pendiente</div>
+            </div>
+        </div>
+        <div class="export-button">Exportar</div>
+    </div>
 
-  <h2>Historial de Préstamos</h2>
-
-  <form class="card">
-    <label>Fecha inicio:
-      <input type="date" />
-    </label>
-    <label>Fecha fin:
-      <input type="date" />
-    </label>
-    <label>Usuario:
-      <input type="text" />
-    </label>
-    <label>Tipo de equipo:
-      <select>
-        <option>Todos</option>
-        <option>Laptop</option>
-        <option>HDMI</option>
-      </select>
-    </label>
-    <label>Estado:
-      <select>
-        <option>Todos</option>
-        <option>Devuelto</option>
-        <option>Pendiente</option>
-      </select>
-    </label>
-  </form>
-
-  <div class="card results">
-    <p><strong>HDMI</strong> - Usuario: Juan - <span style="color: green;">Devuelto</span></p>
-    <p><strong>Laptop</strong> - Usuario: Ana - <span style="color: red;">Pendiente</span></p>
-  </div>
-
-  <button class="yellow">Exportar</button>
-
+    <script>
+        function mostrarReportes() {
+            document.querySelectorAll('.report-section').forEach(section => {
+                section.style.display = 'block';
+            });
+        }
+    </script>
 </body>
 </html>
