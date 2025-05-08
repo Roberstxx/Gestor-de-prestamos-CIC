@@ -1,103 +1,206 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Gestión de Usuarios</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f9f9;
-      color: #222;
-      padding: 2rem;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      max-width: 800px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: space-between;
-    }
-    label {
-      flex: 1 1 45%;
-      display: flex;
-      flex-direction: column;
-      font-weight: 500;
-      gap: 0.25rem;
-    }
-    input, select {
-      padding: 0.5rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    .buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
-      margin-top: 1rem;
-    }
-    button {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: bold;
-      color: #000;
-    }
-    .yellow {
-      background: #FFD700;
-    }
-    .blue {
-      background: #3399FF;
-      color: white;
-    }
-    .dark {
-      background: #333;
-      color: white;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #87CEEB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ADD8E6;
+            border-radius: 10px;
+            padding: 20px;
+            width: 80%;
+            height: 80%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .header {
+            background-color: #FFD700;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+        }
+        .back-button {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .summary {
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .search-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .search-group input {
+            width: 50%;
+            padding: 6px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        .search-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .search-button img {
+            width: 24px;
+            height: 24px;
+        }
+        .user-list {
+            background-color: #E0FFFF;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            height: 40%;
+            overflow-y: auto;
+        }
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+        .actions button {
+            margin-left: 5px;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .edit-modal, .delete-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-
-  <h2>Gestión de Usuarios</h2>
-  <form class="card">
-    <label>Nombre de usuario:
-      <input type="text" />
-    </label>
-    <label>Correo electrónico:
-      <input type="email" />
-    </label>
-    <label>Contraseña:
-      <input type="password" />
-    </label>
-    <label>Rol:
-      <select>
-        <option>Usuario</option>
-        <option>Administrador</option>
-      </select>
-    </label>
-    <label>Estado:
-      <select>
-        <option>Activo</option>
-        <option>Inactivo</option>
-      </select>
-    </label>
-    <div class="buttons">
-      <button class="yellow">Agregar</button>
-      <button class="blue">Actualizar</button>
-      <button class="dark">Eliminar</button>
+    <div class="container">
+        <div class="header">
+            <button class="back-button" onclick="volver()">⬅</button>
+            Panel de Administración
+        </div>
+        <div class="search-group">
+            <input type="text" id="search" placeholder="Buscar por nombre o matrícula">
+            <button class="search-button">
+                <img src="https://cdn-icons-png.flaticon.com/512/54/54481.png" alt="Buscar">
+            </button>
+        </div>
+        <div class="user-list" id="user-list">
+            <div class="user-item">
+                <span id="user-Juan">Juan Pérez - 12345 - <span class="status">Activo</span></span>
+                <div class="actions">
+                    <button onclick="editarUsuario('Juan', 'user-Juan')">✏️ Editar</button>
+                    <button onclick="confirmarEliminacion('Juan', 'user-Juan')">🗑 Eliminar</button>
+                </div>
+            </div>
+            <div class="user-item">
+                <span id="user-Maria">Maria López - 67890 - <span class="status">Inactivo</span></span>
+                <div class="actions">
+                    <button onclick="editarUsuario('Maria', 'user-Maria')">✏️ Editar</button>
+                    <button onclick="confirmarEliminacion('Maria', 'user-Maria')">🗑 Eliminar</button>
+                </div>
+            </div>
+        </div>
+        <div class="summary">Usuarios registrados: <span id="total-users">2</span></div>
     </div>
-  </form>
 
+    <div class="edit-modal" id="edit-modal">
+        <p>Editar estado del usuario</p>
+        <select id="edit-status">
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+        </select>
+        <button onclick="guardarEstado()">Guardar</button>
+        <button onclick="cerrarModal('edit-modal')">Cancelar</button>
+    </div>
+
+    <div class="delete-modal" id="delete-modal">
+        <p>Ingrese código de administrador para eliminar usuario</p>
+        <input type="password" id="admin-code" placeholder="Código">
+        <button onclick="eliminarUsuario()">Confirmar</button>
+        <button onclick="cerrarModal('delete-modal')">Cancelar</button>
+    </div>
+
+    <script>
+        let usuarioSeleccionado = "";
+        let elementoSeleccionado = "";
+
+        function volver() {
+            alert("Regresando a la pantalla anterior...");
+            // Aquí puedes agregar la redirección real usando window.location.href = "URL_DE_LA_PANTALLA_ANTERIOR";
+        }
+
+        function editarUsuario(nombre, id) {
+            usuarioSeleccionado = nombre;
+            elementoSeleccionado = id;
+            document.getElementById("edit-modal").style.display = "block";
+        }
+
+        function guardarEstado() {
+            let nuevoEstado = document.getElementById("edit-status").value;
+            document.getElementById(elementoSeleccionado).querySelector(".status").innerText = nuevoEstado;
+            alert("Estado de " + usuarioSeleccionado + " actualizado a " + nuevoEstado);
+            cerrarModal('edit-modal');
+        }
+
+        function confirmarEliminacion(nombre, id) {
+            usuarioSeleccionado = nombre;
+            elementoSeleccionado = id;
+            document.getElementById("delete-modal").style.display = "block";
+        }
+
+        function eliminarUsuario() {
+            let codigoIngresado = document.getElementById("admin-code").value;
+            let codigoCorrecto = "1234"; // Aquí podrías conectar con tu base de datos
+
+            if (codigoIngresado === codigoCorrecto) {
+                document.getElementById(elementoSeleccionado).remove();
+                alert("Usuario " + usuarioSeleccionado + " eliminado correctamente.");
+            } else {
+                alert("Código incorrecto. No se pudo eliminar el usuario.");
+            }
+
+            cerrarModal('delete-modal');
+        }
+
+        function cerrarModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+    </script>
 </body>
 </html>
