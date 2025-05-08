@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulario de Préstamo</title>
+  <style>
+    /* === PALETA DE COLORES === */
+    /* Define variables CSS (custom properties) para los colores principales del sitio. Esto facilita la modificación y consistencia del diseño. */
+    :root {
+      --azul-oscuro: #1c2b4a;
+      --gris-oscuro: #444;
+      --gris-claro: #eaeaea;
+      --amarillo: #ffe63c;
+      --azul-brillante: #2188ff;
+      --fuente: 'Segoe UI', sans-serif; /* Define una fuente de texto predeterminada. */
+    }
+
+    /* === ESTILOS GENERALES === */
+    /* Aplica estilos a todos los elementos de la página. */
+    * {
+      box-sizing: border-box; /* Incluye el padding y el border dentro del ancho y alto de un elemento. */
+      margin: 0; /* Elimina el margen predeterminado de los elementos. */
+      padding: 0; /* Elimina el relleno predeterminado de los elementos. */
+    }
+
+    /* Estilos para el elemento body (el cuerpo de la página). */
+    body {
+      font-family: var(--fuente); /* Usa la fuente definida en la variable --fuente. */
+      background-color: var(--gris-claro); /* Establece el color de fondo usando la variable --gris-claro. */
+      display: flex; /* Utiliza Flexbox para el diseño. */
+      justify-content: center; /* Centra el contenido horizontalmente dentro del body. */
+      align-items: center; /* Centra el contenido verticalmente dentro del body. */
+      min-height: 100vh; /* Asegura que el body ocupe al menos el 100% de la altura de la ventana. */
+      padding: 2rem; /* Añade un relleno de 2 rem (root em) alrededor del contenido del body. */
+    }
+
+    /* === CONTENEDOR PRINCIPAL === */
+    /* Estilos para el contenedor principal del formulario. */
+    .container {
+      max-width: 800px; /* Establece un ancho máximo para el contenedor. */
+      width: 100%; /* Hace que el contenedor ocupe el 100% del ancho disponible (hasta el max-width). */
+      background-color: white; /* Establece el color de fondo del contenedor en blanco. */
+      padding: 2rem; /* Añade un relleno de 2 rem dentro del contenedor. */
+      border-radius: 10px; /* Redondea las esquinas del contenedor. */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Añade una sombra suave al contenedor. */
+    }
+
+    /* === BOTÓN "ATRÁS" === */
+    /* Estilos para el botón "Atrás". */
+    .btn-atras {
+      background-color: var(--gris-claro); /* Usa el color de fondo definido en --gris-claro. */
+      border: none; /* Elimina el borde del botón. */
+      padding: 0.5rem 1rem; /* Añade relleno vertical y horizontal al botón. */
+      border-radius: 8px; /* Redondea las esquinas del botón. */
+      font-weight: bold; /* Pone el texto del botón en negrita. */
+      cursor: pointer; /* Cambia el cursor al pasar por encima, indicando que es interactivo. */
+      display: block; /* Hace que el botón ocupe todo el ancho disponible y crea una nueva línea antes y después. */
+      margin-bottom: 1rem; /* Añade un margen inferior para separarlo del siguiente elemento. */
+    }
+
+    /* === TITULO === */
+    /* Estilos para el título principal (h2). */
+    h2 {
+      text-align: center; /* Centra el texto del título. */
+      color: var(--azul-oscuro); /* Usa el color del texto definido en --azul-oscuro. */
+      font-size: 1.8rem; /* Establece el tamaño de la fuente del título. */
+      margin-bottom: 2rem; /* Añade un margen inferior para separarlo del formulario. */
+    }
+
+    /* === FILAS Y CAMPOS DE FORMULARIO === */
+    /* Estilos para las filas que contienen los campos del formulario. */
+    .fila {
+      display: flex; /* Utiliza Flexbox para alinear los elementos dentro de la fila. */
+      gap: 1rem; /* Establece un espacio de 1 rem entre los elementos de la fila. */
+      margin-bottom: 1.5rem; /* Añade un margen inferior a cada fila. */
+      align-items: flex-start; /* Alinea los elementos verticalmente al inicio de la línea. */
+      flex-wrap: wrap; /* Permite que los elementos se envuelvan a la siguiente línea si no hay suficiente espacio. */
+    }
+
+    /* Estilos para las columnas dentro de las filas del formulario. */
+    .columna {
+      flex: 1; /* Hace que cada columna ocupe la misma cantidad de espacio disponible en la fila. */
+    }
+
+    /* Estilos para las etiquetas de los campos del formulario. */
+    label {
+      font-weight: 500; /* Pone el texto de la etiqueta en seminegrita. */
+      color: var(--gris-oscuro); /* Usa el color del texto definido en --gris-oscuro. */
+      display: block; /* Hace que la etiqueta ocupe todo el ancho disponible y crea una nueva línea después. */
+      margin-bottom: 0.4rem; /* Añade un pequeño margen inferior a la etiqueta. */
+    }
+
+    /* Estilos para los campos de texto (input type="text") y los selectores (select). */
+    input[type="text"],
+    select {
+      padding: 0.6rem; /* Añade un relleno dentro de los campos. */
+      width: 100%; /* Hace que los campos ocupe todo el ancho de su contenedor. */
+      border: 1px solid #ccc; /* Añade un borde gris claro a los campos. */
+      border-radius: 5px; /* Redondea las esquinas de los campos. */
+      font-size: 1rem; /* Establece el tamaño de la fuente dentro de los campos. */
+    }
+
+    /* === CONTENEDOR DE EQUIPOS === */
+    /* Estilos para el contenedor que contendrá las filas de los equipos a prestar. */
+    .equipos-container {
+      max-height: 200px; /* Establece una altura máxima para el contenedor. */
+      overflow-y: auto; /* Añade una barra de desplazamiento vertical si el contenido excede la altura máxima. */
+      overflow-x: hidden; /* Oculta la barra de desplazamiento horizontal si aparece. */
+      margin-bottom: 1rem; /* Añade un margen inferior al contenedor. */
+    }
+
+    /* Estilos para cada fila de equipo. */
+    .equipo-row {
+      display: flex; /* Utiliza Flexbox para alinear los elementos dentro de la fila del equipo. */
+      gap: 1rem; /* Establece un espacio de 1 rem entre los elementos de la fila del equipo. */
+      margin-bottom: 1rem; /* Añade un margen inferior a cada fila de equipo. */
+      align-items: center; /* Alinea verticalmente los elementos al centro. */
+    }
+
+    /* === BOTÓN PARA ELIMINAR FILA === */
+    /* Estilos para el botón de eliminar una fila de equipo. */
+    .btn-eliminar {
+      background-color: #ff4d4d; /* Establece un color de fondo rojo. */
+      color: white; /* Establece el color del texto en blanco. */
+      border: none; /* Elimina el borde del botón. */
+      border-radius: 50%; /* Hace que el botón sea circular. */
+      width: 24px; /* Establece el ancho del botón. */
+      height: 24px; /* Establece la altura del botón. */
+      cursor: pointer; /* Cambia el cursor al pasar por encima. */
+      font-weight: bold; /* Pone el texto del botón en negrita. */
+      display: flex; /* Utiliza Flexbox para centrar el contenido. */
+      justify-content: center; /* Centra el contenido horizontalmente. */
+      align-items: center; /* Centra el contenido verticalmente. */
+    }
+
+    /* === BOTÓN PARA AÑADIR EQUIPO === */
+    /* Estilos para el botón de añadir más equipos. */
+    .btn-add {
+      background-color: transparent; /* Hace que el fondo sea transparente. */
+      border: none; /* Elimina el borde del botón. */
+      color: var(--azul-brillante); /* Usa el color del texto definido en --azul-brillante. */
+      font-weight: bold; /* Pone el texto del botón en negrita. */
+      font-size: 1rem; /* Establece el tamaño de la fuente. */
+      margin-top: 1rem; /* Añade un margen superior al botón. */
+      cursor: pointer; /* Cambia el cursor al pasar por encima. */
+    }
+
+    /* === SECCIÓN DE BOTONES DE ACCIÓN === */
+    /* Estilos para el contenedor de los botones de acción (Devueltos, Prestar, Pendientes). */
+    .acciones {
+      display: flex; /* Utiliza Flexbox para alinear los botones horizontalmente. */
+      justify-content: space-around; /* Distribuye los botones con espacio igual entre ellos y alrededor. */
+      margin-top: 2rem; /* Añade un margen superior a la sección de botones. */
+    }
+
+    /* Estilos para cada botón de acción. */
+    .acciones button {
+      flex: 1; /* Hace que cada botón ocupe la misma cantidad de espacio disponible. */
+      margin: 0 0.5rem; /* Añade un margen horizontal entre los botones. */
+      background-color: var(--amarillo); /* Usa el color de fondo definido en --amarillo. */
+      border: none; /* Elimina el borde del botón. */
+      padding: 0.8rem; /* Añade relleno dentro del botón. */
+      border-radius: 12px; /* Redondea las esquinas del botón. */
+      font-size: 1rem; /* Establece el tamaño de la fuente. */
+      font-weight: bold; /* Pone el texto del botón en negrita. */
+      cursor: pointer; /* Cambia el cursor al pasar por encima. */
+      transition: background-color 0.2s; /* Añade una transición suave para el cambio de color. */
+    }
+
+    /* Estilo específico para el segundo botón de acción (Prestar). */
+    .acciones button:nth-child(2) {
+      background-color: var(--azul-brillante); /* Usa el color de fondo definido en --azul-brillante. */
+      color: white; /* Establece el color del texto en blanco. */
+    }
+
+    /* Estilo para cuando se pasa el ratón por encima de los botones de acción. */
+    .acciones button:hover {
+      opacity: 0.8; /* Reduce ligeramente la opacidad para dar un efecto visual. */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="btn-atras">Atrás</button>
+    <h2>Realiza tu préstamo</h2>
+
+    <div class="fila">
+      <div class="columna">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Nombre" />
+      </div>
+      <div class="columna">
+        <label for="matricula">Matrícula:</label>
+        <input type="text" id="matricula" name="matricula" placeholder="Matrícula" />
+      </div>
+    </div>
+
+    <div class="fila">
+      <div class="columna">
+        <label>Tipo Área:</label>
+        <select><option>Seleccionar</option></select>
+      </div>
+      <div class="columna">
+        <label>Área:</label>
+        <select><option>Seleccionar</option></select>
+      </div>
+      <div class="columna">
+        <label>Edificio:</label>
+        <select><option>Seleccionar</option></select>
+      </div>
+    </div>
+
+    <div class="fila">
+      <label>Equipo a prestar:</label>
+    </div>
+
+    <div class="equipos-container" id="equipos"></div>
+
+    <button class="btn-add" onclick="agregarEquipo()">+ Añadir equipo</button>
+
+    <div class="acciones">
+      <button>Devueltos</button>
+      <button>Prestar</button>
+      <button>Pendientes</button>
+    </div>
+  </div>
+
+  <script>
+    // Función JavaScript para agregar dinámicamente una nueva fila para seleccionar un equipo.
+    function agregarEquipo() {
+      // Obtiene el elemento contenedor donde se agregarán las filas de equipos.
+      const container = document.getElementById('equipos');
+      // Crea un nuevo elemento div para representar una fila de equipo.
+      const fila = document.createElement('div');
+      // Asigna la clase 'equipo-row' a la nueva fila para aplicar los estilos correspondientes.
+      fila.className = 'equipo-row';
+
+      // Define el contenido HTML de la nueva fila, incluyendo un selector de equipo, un campo para la cantidad y un botón para eliminar la fila.
+      fila.innerHTML = `
+        <select class="columna"><option>Equipo</option></select>
+        <input type="text" class="columna" placeholder="Cantidad" />
+        <button class="btn-eliminar" onclick="eliminarFila(this)">×</button>
+      `;
+
+      // Agrega la nueva fila al contenedor de equipos.
+      container.appendChild(fila);
+    }
+
+    // Función JavaScript para eliminar la fila de equipo en la que se hizo clic en el botón de eliminar.
+    function eliminarFila(btn) {
+      // Obtiene el elemento padre del botón (que es la fila 'equipo-row') y lo elimina del DOM.
+      btn.parentElement.remove();
+    }
+  </script>
+</body>
+</html>

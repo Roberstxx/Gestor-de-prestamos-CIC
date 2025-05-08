@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Usuarios</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      color: #222;
+      padding: 2rem;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+    label {
+      flex: 1 1 45%;
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+      gap: 0.25rem;
+    }
+    input, select {
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #000;
+    }
+    .yellow {
+      background: #FFD700;
+    }
+    .blue {
+      background: #3399FF;
+      color: white;
+    }
+    .dark {
+      background: #333;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Gestión de Usuarios</h2>
+  <form class="card">
+    <label>Nombre de usuario:
+      <input type="text" />
+    </label>
+    <label>Correo electrónico:
+      <input type="email" />
+    </label>
+    <label>Contraseña:
+      <input type="password" />
+    </label>
+    <label>Rol:
+      <select>
+        <option>Usuario</option>
+        <option>Administrador</option>
+      </select>
+    </label>
+    <label>Estado:
+      <select>
+        <option>Activo</option>
+        <option>Inactivo</option>
+      </select>
+    </label>
+    <div class="buttons">
+      <button class="yellow">Agregar</button>
+      <button class="blue">Actualizar</button>
+      <button class="dark">Eliminar</button>
+    </div>
+  </form>
+
+</body>
+</html>

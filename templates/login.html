@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login CIC</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+
+<body>
+
+    <div class="container" id="container">
+
+        <!-- Registro -->
+        <div class="form-container sign-up">
+            <form id="signUpForm">
+                <h1>Crea tu cuenta</h1>
+                <div class="social-icons"></div>
+                <span>Ingresa tu información para registrarte</span>
+
+                <input type="text" name="name" placeholder="Nombre" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+
+                <div>
+                    <label for="userType">¿Eres?</label>
+                    <select id="userType" name="userType" required>
+                        <option value="student">Estudiante</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+
+                <!-- Campo clave de sesión (solo estudiantes) -->
+                <div id="sessionKeyField" style="display: none;">
+                    <label for="sessionKey">Clave de sesión:</label>
+                    <input type="text" id="sessionKey" name="sessionKey" placeholder="Clave que te dio tu profesor">
+                </div>
+
+                <!-- Campo clave de administrador -->
+                <div id="adminKeyField" style="display: none;">
+                    <label for="adminKey">Llave de Administrador:</label>
+                    <input type="text" id="adminKey" name="adminKey" placeholder="Llave de Administrador">
+                </div>
+
+                <button type="submit">Registrarse</button>
+            </form>
+        </div>
+
+        <!-- Inicio de sesión -->
+        <div class="form-container sign-in">
+            <form id="signInForm">
+                <h1>Inicio de sesión</h1>
+                <div class="social-icons"></div>
+                <span>Ingresa tu usuario y contraseña</span>
+
+                <input type="text" name="user" placeholder="Usuario" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+
+                <a href="#">¿Olvidaste tu contraseña?</a>
+                <button type="submit">Iniciar sesión</button>
+            </form>
+        </div>
+
+        <!-- Panel de alternancia -->
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>¡Bienvenido de nuevo!</h1>
+                    <p>Inicia sesión para empezar esta aventura</p>
+                    <button class="hidden" id="login">Iniciar sesión</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>¡Hola Colaborador!</h1>
+                    <p>¿Eres nuevo?</p>
+                    <button class="hidden" id="register">Registrarse</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="/static/js/login.js"></script>
+</body>
+
+</html>

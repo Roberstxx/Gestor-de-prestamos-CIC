@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Realiza tu préstamo</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #c9d6ff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    
+    .main-container {
+        width: 95%;
+        max-width: 1100px;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        font-weight: bold;
+    }
+    
+    .content {
+        display: flex;
+        gap: 30px;
+        justify-content: space-between;
+    }
+    
+    .form-box, .equipment-box {
+        flex: 1;
+        padding: 20px;
+        border: 2px solid #ccc;
+        border-radius: 12px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: bold;
+    }
+    
+    input[type="text"], select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+    
+    .add-equipment {
+        margin-bottom: 15px;
+        cursor: pointer;
+        color: #0072ff;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    
+    .equipment-entry {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+    
+    .equipment-entry input {
+        flex: 1;
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+    
+    .remove-btn {
+        color: red;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    /* BOTONES */
+    .footer-buttons {
+        margin-top: 30px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    .footer-buttons button {
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-devueltos {
+        background-color: #ffdd00;
+        color: #2d2d2d;
+    }
+    
+    .btn-devueltos:hover {
+        background-color: #f5cf00;
+        box-shadow: 0 0 10px #ffdd00;
+    }
+    
+    .btn-prestar {
+        background-color: #0072ff;
+        color: #ffffff;
+    }
+    
+    .btn-prestar:hover {
+        background-color: #005ce6;
+        box-shadow: 0 0 12px #0072ff;
+    }
+    
+    .btn-pendientes {
+        background-color: #ffdd00;
+        color: #2d2d2d;
+    }
+    
+    .btn-pendientes:hover {
+        background-color: #f5cf00;
+        box-shadow: 0 0 10px #ffdd00;
+    }
+    
+    .footer-buttons button:hover {
+        transform: translateY(-2px);
+    }
+    
+    .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background-color: #ffe599;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+        line-height: 40px;
+        text-align: center;
+        cursor: pointer;
+        text-decoration: none;
+        color: #000;
+    }
+    
+
+    </style>
+</head>
+<body>
+
+<a href="#" class="back-btn">&#8592;</a>
+
+<div class="main-container">
+    <h2>Realiza tu préstamo</h2>
+    <div class="content">
+
+        <!-- Formulario de datos -->
+        <div class="form-box">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" placeholder="Nombre">
+            </div>
+            <div class="form-group">
+                <label for="matricula">Matrícula:</label>
+                <input type="text" id="matricula" placeholder="Matrícula">
+            </div>
+            <div class="form-group">
+                <label for="tipo-area">Tipo Área:</label>
+                <select id="tipo-area">
+                    <option value="">Selecciona un tipo</option>
+                    <option value="laboratorio">Laboratorio</option>
+                    <option value="aula">Aula</option>
+                    <option value="aula">Sala CIC</option>
+                    <option value="aula">Sala de maestros</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="area">Área:</label>
+                <select id="area">
+                    <option value="">Selecciona un área</option>
+                    <option value="salon26">Salon 26</option>
+                    <option value="salon27">Salon 27</option>
+                    <option value="salon28">Salon 28</option>
+                    <option value="Salon29">Salon 29</option>
+                    <option value="salon30">Salon 30</option>
+                    <option value="salon31">Salon 31</option>
+                    <option value="sala1">Sala 1</option>
+                    <option value="sala2">Sala 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edificio">Edificio:</label>
+                <select id="edificio">
+                    <option value="">Selecciona un edificio</option>
+                    <option value="A">Edificio A</option>
+                    <option value="B">Edificio B</option>
+                    <option value="C">Edificio C</option>
+                    <option value="D">Edificio D</option>
+                    <option value="E">Edificio E</option>
+                    <option value="F">Edificio F</option>
+                    
+                </select>
+            </div>
+        </div>
+
+        <!-- Equipos -->
+        <div class="equipment-box">
+            <div class="add-equipment" onclick="addEquipment()">+ Añadir equipo</div>
+            <div id="equipmentList">
+                <!-- Elementos añadidos dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-buttons">
+        <button class="btn-devueltos" onclick="alert('Devueltos')">Devueltos</button>
+        <button class="btn-prestar" onclick="alert('Prestado')">Prestar</button>
+        <button class="btn-pendientes" onclick="alert('Pendientes')">Pendientes</button>
+    </div>
+</div>
+
+<script>
+    function addEquipment() {
+        const container = document.getElementById('equipmentList');
+        const div = document.createElement('div');
+        div.className = 'equipment-entry';
+        div.innerHTML = `
+            <input type="text" placeholder="Equipo">
+            <input type="number" placeholder="Cantidad" min="1">
+            <span class="remove-btn" onclick="this.parentElement.remove()">×</span>
+        `;
+        container.appendChild(div);
+    }
+</script>
+
+</body>
+</html>
