@@ -1,100 +1,195 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Generar Reportes</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f9f9;
-      color: #222;
-      padding: 2rem;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      max-width: 850px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: space-between;
-    }
-    label {
-      flex: 1 1 45%;
-      display: flex;
-      flex-direction: column;
-      font-weight: 500;
-      gap: 0.25rem;
-    }
-    input, select {
-      padding: 0.5rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    .buttons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      width: 100%;
-      margin-top: 1rem;
-    }
-    button {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: bold;
-      color: #000;
-    }
-    .yellow {
-      background: #FFD700;
-    }
-    .blue {
-      background: #3399FF;
-      color: white;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generación de Reportes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #87CEEB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ADD8E6;
+            border-radius: 10px;
+            padding: 20px;
+            width: 80%;
+            height: 80%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .header {
+            background-color: #FFD700;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+        }
+        .back-button {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .filters div {
+            flex: 1;
+            margin: 5px;
+            display: flex;
+            flex-direction: column;
+        }
+        .filters input, .filters select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .search-button {
+            background: #FFD700;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            align-self: center;
+        }
+        .report-table {
+            background-color: #E0FFFF;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            height: 40%;
+            overflow-y: auto;
+            display: none; /* Oculto por defecto hasta que se genere el reporte */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background-color: #FFD700;
+        }
+        .export-button {
+            background-color: #FFD700;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            display: none; /* Oculto hasta que haya un reporte generado */
+        }
+    </style>
 </head>
 <body>
-
-  <h2>Generar Reportes</h2>
-  <form class="card">
-    <label>Desde:
-      <input type="date" />
-    </label>
-    <label>Hasta:
-      <input type="date" />
-    </label>
-    <label>Filtrar por usuario:
-      <input type="text" />
-    </label>
-    <label>Filtrar por estado:
-      <select>
-        <option>Todos</option>
-        <option>Devueltos</option>
-        <option>Pendientes</option>
-      </select>
-    </label>
-    <label>Tipo de equipo:
-      <select>
-        <option>Todos</option>
-        <option>Laptop</option>
-        <option>Proyector</option>
-        <option>HDMI</option>
-      </select>
-    </label>
-    <div class="buttons">
-      <button class="yellow">Generar</button>
-      <button class="blue">Exportar a PDF</button>
+    <div class="container">
+        <div class="header">
+            <button class="back-button" onclick="volver()">⬅</button>
+            Generación de Reportes
+        </div>
+        <div class="filters">
+            <div>
+                <label for="fecha-inicio">Fecha Inicio</label>
+                <input type="date" id="fecha-inicio">
+            </div>
+            <div>
+                <label for="fecha-fin">Fecha Fin</label>
+                <input type="date" id="fecha-fin">
+            </div>
+            <div>
+                <label for="usuario">Usuario</label>
+                <input type="text" id="usuario">
+            </div>
+            <div>
+                <label for="tipo-equipo">Tipo de Equipo</label>
+                <select id="tipo-equipo">
+                    <option value="todos">Todos</option>
+                    <option value="laptop">Laptop</option>
+                    <option value="hdmi">HDMI</option>
+                    <option value="proyector">Proyector</option>
+                </select>
+            </div>
+            <div>
+                <label for="estado">Estado</label>
+                <select id="estado">
+                    <option value="todos">Todos</option>
+                    <option value="devuelto">Devuelto</option>
+                    <option value="pendiente">Pendiente</option>
+                </select>
+            </div>
+        </div>
+        <button class="search-button" onclick="generarReporte()">🔍 Generar Reporte</button>
+        <div class="report-table" id="report-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Matrícula</th>
+                        <th>Tipo de Equipo</th>
+                        <th>Estado</th>
+                        <th>Fecha Préstamo</th>
+                        <th>Fecha Devolución</th>
+                    </tr>
+                </thead>
+                <tbody id="report-body">
+                    <tr>
+                        <td>Juan Pérez</td>
+                        <td>12345</td>
+                        <td>Laptop</td>
+                        <td>Devuelto</td>
+                        <td>01/05/2025</td>
+                        <td>05/05/2025</td>
+                    </tr>
+                    <tr>
+                        <td>Maria López</td>
+                        <td>67890</td>
+                        <td>HDMI</td>
+                        <td>Pendiente</td>
+                        <td>02/05/2025</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="export-button" onclick="exportarReporte()">📄 Exportar Reporte</button>
     </div>
-  </form>
 
+    <script>
+        function volver() {
+            alert("Regresando a la pantalla anterior...");
+            // Aquí puedes redirigir con window.location.href = "URL_DE_LA_PANTALLA_ANTERIOR";
+        }
+
+        function generarReporte() {
+            document.getElementById("report-table").style.display = "block";
+            document.querySelector(".export-button").style.display = "block";
+        }
+
+        function exportarReporte() {
+            alert("Exportando reporte...");
+            // Aquí puedes agregar la funcionalidad de exportación en PDF/Excel
+        }
+    </script>
 </body>
 </html>
