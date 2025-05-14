@@ -120,36 +120,25 @@
 </head>
 <body>
   <div class="container">
-    <button class="back-button">Atrás</button>
-    <h1 class="title">Devueltos del día</h1>
+  <button class="back-button" onclick="window.location.href='/User/prestamos.html'">Atrás</button>
+  <h1 class="title">Devueltos del día</h1>
 
-    <div class="card">
-      <h2 class="name">Perla Karime</h2>
-      <div class="info-row">
-        <p><strong>Hora préstamo:</strong> <span class="highlight">08:00 AM</span></p>
-        <p><strong>Matrícula:</strong> <span class="highlight">65146</span></p>
-        <p><strong>Entregado por:</strong> Alan Sauriel</p>
-      </div>
-      <div class="info-row">
-        <p><strong>Hora devolución:</strong> <span class="highlight">09:30 AM</span></p>
-        <p><strong>Equipo:</strong> HDMI</p>
-        <p><strong>Cantidad:</strong> 1</p>
-      </div>
+  {% for devuelto in devueltos %}
+  <div class="card">
+    <h2 class="name">{{ devuelto.nombre }}</h2>
+    <div class="info-row">
+      <p><strong>Hora préstamo:</strong> <span class="highlight">{{ devuelto.hora_prestamo }}</span></p>
+      <p><strong>Matrícula:</strong> <span class="highlight">{{ devuelto.matricula }}</span></p>
+      <p><strong>Entregado por:</strong> {{ devuelto.entregado_por }}</p>
     </div>
-
-    <div class="card">
-      <h2 class="name">Heribe Huribe</h2>
-      <div class="info-row">
-        <p><strong>Hora préstamo:</strong> <span class="highlight">08:00 AM</span></p>
-        <p><strong>Matrícula:</strong> <span class="highlight">65786</span></p>
-        <p><strong>Entregado por:</strong> Alan Sauriel</p>
-      </div>
-      <div class="info-row">
-        <p><strong>Hora devolución:</strong> <span class="highlight">09:30 AM</span></p>
-        <p><strong>Equipo:</strong> HDMI 1, Mouse 1</p>
-        <p><strong>Cantidad:</strong> 2</p>
-      </div>
+    <div class="info-row">
+      <p><strong>Hora devolución:</strong> <span class="highlight">{{ devuelto.hora_devolucion }}</span></p>
+      <p><strong>Equipo:</strong> {{ devuelto.equipo }}</p>
+      <p><strong>Cantidad:</strong> {{ devuelto.cantidad }}</p>
     </div>
   </div>
+  {% endfor %}
+</div>
+
 </body>
 </html>
