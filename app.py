@@ -34,6 +34,20 @@ def pendientes():
 #@app.route('/User/devueltos')
 #def Vista_devueltos():
 #    return render_template('User/devueltos.html')
+@app.route('/inventario')
+def vista_inventario():
+    return render_template('Admin/inventario.html')
+
+@app.route('/paneladmin')
+def paneladmin():
+    return render_template('Admin/PanelAdmin.html')
+
+@app.route('/admin/historial')
+def historial_admin():
+    historial = obtener_historial_desde_db()  # Asegúrate de que esta función esté definida
+    return render_template('Admin/historial.html', historial=historial)
+
+
 
 
 
@@ -306,6 +320,117 @@ def mostrar_devueltos():
     finally:
         cursor.close()
         conexion.close()
+
+# API: obtener inventario
+@app.route('/api/inventario', methods=['GET'])
+def api_inventario():
+    conexion = conectar_bd()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM inventario")
+        equipos = cursor.fetchall()
+        return jsonify(equipos), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conexion.close()
+
+# API: agregar equipo
+@app.route('/api/inventario', methods=['POST'])
+def api_agregar_equipo():
+    data = request.json
+    conexion = conectar_bd()
+    cursor = conexion.cursor()
+    try:
+        cursor.execute("""
+            INSERT INTO inventario (nombre, tipo, marca, numero_serie, fecha_adquisicion)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (
+            data['nombre'],
+            data['tipo'],
+            data['marca'],
+            data['numero_serie'],
+            data['fecha_adquisicion']
+        ))
+        conexion.commit()
+        return jsonify({'success': True}), 201
+    except Exception as e:
+        conexion.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conexion.close()
+
+# API: eliminar equipo
+@app.route('/api/inventario/<int:id>', methods=['DELETE'])
+def api_eliminar_equipo(id):
+    conexion = conectar_bd()
+    cursor = conexion.cursor()
+    try:
+        cursor.execute("DELETE FROM inventario WHERE id = %s", (id,))
+        conexion.commit()
+        return jsonify({'success': True}), 200
+    except Exception as e:
+        conexion.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conexion.close()
+        
+@app.route('/User/historial')
+def historial():
+    conexion = conectar_bd()
+    if not conexion:
+        return "Error al conectar a la base de datos", 500
+
+    cursor = conexion.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT pr.id, pr.nombre, pr.matricula, pr.tipo_area, pr.area, pr.edificio,
+                   pr.equipo, pr.cantidad, pr.fecha, pr.devuelto, pr.updated_at,
+                   u.nombre AS nombre_usuario, s.nombre AS nombre_sesion
+            FROM prestamos_realizados pr
+            LEFT JOIN usuarios u ON pr.usuario_id = u.id
+            LEFT JOIN sesiones s ON pr.sesion_id = s.id
+            ORDER BY pr.fecha DESC
+        """)
+        historial = cursor.fetchall()
+        return render_template('User/Historial.html', historial=historial)
+    except mysql.connector.Error as err:
+        print("Error SQL:", err)
+        return "Error al obtener los datos", 500
+    finally:
+        cursor.close()
+        conexion.close()
+        
+        
+def obtener_historial_desde_db():
+    conexion = conectar_bd()
+    if not conexion:
+        return []
+
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            SELECT pr.id, pr.nombre, pr.matricula, pr.tipo_area, pr.area, pr.edificio,
+                   pr.equipo, pr.cantidad, pr.fecha, pr.devuelto, pr.updated_at,
+                   u.nombre AS nombre_usuario, s.nombre AS nombre_sesion
+            FROM prestamos_realizados pr
+            LEFT JOIN usuarios u ON pr.usuario_id = u.id
+            LEFT JOIN sesiones s ON pr.sesion_id = s.id
+            ORDER BY pr.fecha DESC
+        """)
+        return cursor.fetchall()
+    except mysql.connector.Error as err:
+        print("Error SQL:", err)
+        return []
+    finally:
+        cursor.close()
+        conexion.close()
+
+
 
 
         
