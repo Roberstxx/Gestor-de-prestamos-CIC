@@ -24,7 +24,8 @@ def conectar_bd():
 # -------------------- RUTA PRINCIPAL --------------------
 @app.route('/')
 def index():
-    return render_template('login.html')  # login.html debe estar en /templates
+    return render_template('login.html')  # ✅ Correcto
+
 
 # -------------------- REGISTRO DE USUARIOS --------------------
 @app.route('/registro', methods=['POST'])
@@ -57,7 +58,7 @@ def registrar_usuario():
             cursor.execute("INSERT INTO sesiones (admin_id, nombre) VALUES (0, %s)", (nombre,))
             sesion_id = cursor.lastrowid
 
-            clave_sesion = f'CLAVE-{sesion_id}-{email.split("@")[0]}'
+            clave_sesion = f'CLAVE-{sesion_id}-{email.split('@')[0]}'
             cursor.execute("UPDATE sesiones SET clave = %s WHERE id = %s", (clave_sesion, sesion_id))
         else:
             cursor.execute("SELECT id FROM sesiones WHERE clave = %s", (session_key,))
@@ -84,7 +85,7 @@ def registrar_usuario():
         conexion.close()
 
 # -------------------- INICIO DE SESIÓN --------------------
-@app.route('/templates/login', methods=['POST'])
+@app.route('/login', methods=['POST'])  # CAMBIO: esta ruta es la correcta que tu JS usará
 def iniciar_sesion():
     conexion = conectar_bd()
     if not conexion:
@@ -104,7 +105,12 @@ def iniciar_sesion():
         if user:
             user_id, hashed_password, rol, sesion_id = user
             if check_password_hash(hashed_password, password):
-                return jsonify({'success': True, 'rol': rol, 'sesion_id': sesion_id}), 200
+                return jsonify({
+                    'success': True,
+                    'rol': rol,
+                    'sesion_id': sesion_id,
+                    'usuario_id': user_id
+                }), 200
             else:
                 return jsonify({'success': False, 'message': 'Contraseña incorrecta'}), 401
         else:
@@ -116,19 +122,17 @@ def iniciar_sesion():
         cursor.close()
         conexion.close()
 
-# -------------------- RUTA PARA VER PRESTAMOS --------------------
+# -------------------- VISTA DE PRÉSTAMOS --------------------
 @app.route('/prestamos')
 def prestamos():
-    return render_template('User/Prestamos.html')  # asegúrarse que la ruta del archivo es User/Prestamos.html
+    return render_template('User/Prestamos.html')
 
-# -------------------- Panel Admin --------------------
+# -------------------- PANEL DE ADMIN --------------------
 @app.route('/PanelAdmin')
 def admin_dashboard():
     return render_template('Admin/PanelAdmin.html')
 
-
-
-# -------------------- DATOS PRESTAMO --------------------
+# -------------------- REGISTRAR PRÉSTAMO --------------------
 @app.route('/registrar_prestamo', methods=['POST'])
 def registrar_prestamo():
     conexion = conectar_bd()
@@ -136,20 +140,38 @@ def registrar_prestamo():
         return jsonify({'success': False, 'message': 'Error al conectar a la base de datos'}), 500
 
     cursor = conexion.cursor()
-
     usuario_id = request.form.get('usuario_id')
+    admin_id_solicitud = request.form.get('admin_id')  # ✅ Obtener admin_id del formulario
+
+    # --- ¡¡¡ IMPORTANTE: VALIDAR admin_id_solicitud !!! ---
+    # Aquí DEBES implementar una lógica robusta para verificar que el
+    # admin_id_solicitud corresponde a un administrador autenticado
+    # y tiene permiso para realizar esta acción. Esto podría implicar
+    # consultar tu base de datos o utilizar algún otro mecanismo de
+    # autenticación y autorización.
+    #
+    # Ejemplo básico (¡INSUFICIENTE PARA PRODUCCIÓN!):
+    try:
+        admin_id_int = int(admin_id_solicitud)
+    except ValueError:
+        return jsonify({'success': False, 'message': 'ID de administrador inválido'}), 400
+
+    cursor.execute("SELECT id FROM usuarios WHERE id = %s AND rol = 'admin'", (admin_id_int,))
+    admin_autenticado = cursor.fetchone()
+
+    print(f"Valor de admin_id recibido del frontend: {admin_id_solicitud}")  # ***
+    print(f"Resultado de la consulta de validación del admin: {admin_autenticado}")  # ***
+
+    if not admin_autenticado:
+        return jsonify({'success': False, 'message': 'Administrador no válido o no autenticado'}), 401
+    admin_id = admin_autenticado[0]
+    # --- FIN DE LA VALIDACIÓN ---
 
     cursor.execute("SELECT sesion_id FROM usuarios WHERE id = %s", (usuario_id,))
     sesion_result = cursor.fetchone()
     if not sesion_result:
         return jsonify({'success': False, 'message': 'Usuario no encontrado'}), 404
     sesion_id = sesion_result[0]
-
-    cursor.execute("SELECT admin_id FROM sesiones WHERE id = %s", (sesion_id,))
-    admin_result = cursor.fetchone()
-    if not admin_result:
-        return jsonify({'success': False, 'message': 'Sesión no encontrada'}), 404
-    admin_id = admin_result[0]
 
     nombre = request.form.get('nombre')
     matricula = request.form.get('matricula')
@@ -164,18 +186,17 @@ def registrar_prestamo():
 
     try:
         cursor.execute("""
-            INSERT INTO prestamos_realizados 
+            INSERT INTO prestamos_realizados
             (admin_id, usuario_id, sesion_id, nombre, matricula, tipo_area, area, edificio, equipo, cantidad)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (admin_id, usuario_id, sesion_id, nombre, matricula, tipo_area, area, edificio, equipo, cantidad))
-        
+
         conexion.commit()
         return jsonify({'success': True, 'message': 'Préstamo registrado exitosamente'}), 201
 
     except mysql.connector.Error as err:
         conexion.rollback()
         return jsonify({'success': False, 'message': f'Error en la base de datos: {err}'}), 500
-
     finally:
         cursor.close()
         conexion.close()
