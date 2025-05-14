@@ -162,10 +162,12 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="top-bar">
-      <button class="back-button">Atrás</button>
+      <button class="back-button" onclick="window.location.href='/prestamos'">Atrás</button>
+
       <h1 class="title">Devoluciones Pendientes</h1>
     </div>
 
@@ -173,59 +175,74 @@
       <input type="text" class="search-input" placeholder="🔍 Buscar" />
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <button class="btn-devolver">Devolver</button>
-        <p><strong>Heribe Huribe</strong></p>
-        <p>65786</p>
-        <p>Lap top</p>
-        <p class="cantidad">Cantidad: 1</p>
-      </div>
-
-      <div class="card">
-        <button class="btn-devolver">Devolver</button>
-        <p><strong>Heribe Huribe</strong></p>
-        <p>65786</p>
-        <p>Lap top</p>
-        <p class="cantidad">Cantidad: 1</p>
-      </div>
-
-      <div class="card">
-        <button class="btn-devolver">Devolver</button>
-        <p><strong>Carlos Escalante</strong></p>
-        <p>65326</p>
-        <p>HDMI</p>
-        <p class="cantidad">Cantidad: 1</p>
-      </div>
-
-      <div class="card">
-        <button class="btn-devolver">Devolver</button>
-        <p><strong>Carlos Escalante</strong></p>
-        <p>65326</p>
-        <p>HDMI</p>
-        <p class="cantidad">Cantidad: 1</p>
-      </div>
-
-      <div class="card">
-        <button class="btn-devolver">Devolver</button>
-        <p><strong>Perla Karime</strong></p>
-        <p>65146</p>
-        <p>HDMI, Mouse</p>
-        <p class="cantidad">Cantidad: 1</p>
-      </div>
-
-      <div class="card">
-        <button class="btn-devolver">Devolver</button>
-        <p><strong>Perla Karime</strong></p>
-        <p>65146</p>
-        <p>HDMI, Mouse</p>
-        <p class="cantidad">Cantidad: 1</p>
-      </div>
-    </div>
-
-    <div class="footer">
-      <button class="day-button">Devueltos del día</button>
+    <!-- AQUÍ el ID CORRECTO -->
+    <div class="grid" id="cards-container">
+      <!-- Las tarjetas se generarán dinámicamente aquí -->
     </div>
   </div>
+
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const sesionId = localStorage.getItem("sesion_id");  // Asegúrate de haber guardado esto tras el login
+
+  if (!sesionId) {
+    alert("No se encontró el ID de sesión. Vuelve a iniciar sesión.");
+    return;
+  }
+
+  fetch(`/api/prestamos_pendientes/${sesionId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+
+      const container = document.getElementById("cards-container");
+      container.innerHTML = "";
+
+      data.data.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <button class="btn-devolver" data-id="${item.id}">Devolver</button>
+          <p><strong>${item.nombre}</strong></p>
+          <p>${item.matricula}</p>
+          <p>${item.equipo}</p>
+          <p class="cantidad">Cantidad: ${item.cantidad}</p>
+        `;
+        container.appendChild(card);
+      });
+
+      // Agrega listeners a todos los botones de devolver
+      document.querySelectorAll(".btn-devolver").forEach(button => {
+        button.addEventListener("click", () => {
+          const prestamoId = button.getAttribute("data-id");
+
+          fetch(`/api/devolver_prestamo/${prestamoId}`, {
+            method: "POST"
+          })
+          .then(res => res.json())
+          .then(result => {
+            if (result.success) {
+              // Elimina la tarjeta visualmente
+              button.parentElement.remove();
+            } else {
+              alert("Error al marcar como devuelto: " + result.message);
+            }
+          })
+          .catch(err => {
+            console.error("Error en la solicitud de devolución:", err);
+          });
+        });
+      });
+
+    })
+    .catch(error => {
+      console.error("Error cargando préstamos pendientes:", error);
+    });
+});
+</script>
+
 </body>
 </html>
+
