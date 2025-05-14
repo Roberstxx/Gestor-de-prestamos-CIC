@@ -24,7 +24,20 @@ def conectar_bd():
 # -------------------- RUTA PRINCIPAL --------------------
 @app.route('/')
 def index():
-    return render_template('login.html')  # ✅ Correcto
+    return render_template('login.html')
+  # ✅ Correcto
+
+@app.route('/pendientes')
+def pendientes():
+    return render_template('User/pendientesDV.html')
+
+#@app.route('/User/devueltos')
+#def Vista_devueltos():
+#    return render_template('User/devueltos.html')
+
+
+
+
 
 
 # -------------------- REGISTRO DE USUARIOS --------------------
@@ -132,6 +145,8 @@ def prestamos():
 def admin_dashboard():
     return render_template('Admin/PanelAdmin.html')
 
+
+
 # -------------------- REGISTRAR PRÉSTAMO --------------------
 @app.route('/registrar_prestamo', methods=['POST'])
 def registrar_prestamo():
@@ -200,6 +215,100 @@ def registrar_prestamo():
     finally:
         cursor.close()
         conexion.close()
+        
+# -------------------- NUEVAS RUTAS PARA TARJETAS DINÁMICAS --------------------
+
+# 1) Obtener todos los préstamos pendientes de una sesión (devuelto = 0)
+@app.route('/api/prestamos_pendientes/<int:sesion_id>', methods=['GET'])
+def prestamos_pendientes(sesion_id):
+    conexion = conectar_bd()
+    if not conexion:
+        return jsonify({'success': False, 'message': 'Error al conectar a la base de datos'}), 500
+
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            SELECT id, nombre, matricula, equipo, cantidad, fecha
+            FROM prestamos_realizados
+            WHERE sesion_id = %s AND devuelto = 0
+            ORDER BY fecha ASC
+        """, (sesion_id,))
+        prestamos = cursor.fetchall()
+        return jsonify({'success': True, 'data': prestamos}), 200
+
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'message': str(err)}), 500
+
+    finally:
+        cursor.close()
+        conexion.close()
+
+
+# 2) Marcar un préstamo como devuelto (devuelto = 1)
+@app.route('/api/devolver_prestamo/<int:prestamo_id>', methods=['POST'])
+def devolver_prestamo(prestamo_id):
+    conexion = conectar_bd()
+    if not conexion:
+        return jsonify({'success': False, 'message': 'Error al conectar a la base de datos'}), 500
+
+    cursor = conexion.cursor()
+    try:
+        cursor.execute(
+            "UPDATE prestamos_realizados SET devuelto = 1, updated_at = NOW() WHERE id = %s",
+
+            (prestamo_id,)
+        )
+        conexion.commit()
+        
+
+
+        return jsonify({'success': True, 'message': 'Préstamo marcado como devuelto'}), 200
+
+    except mysql.connector.Error as err:
+        conexion.rollback()
+        return jsonify({'success': False, 'message': str(err)}), 500
+
+    finally:
+        cursor.close()
+        conexion.close()
+        
+        
+        # 3) Obtener todos los préstamos devueltos de una sesión (devuelto = 1)
+        
+from datetime import datetime
+
+@app.route('/User/devueltos')
+def mostrar_devueltos():
+    conexion = conectar_bd()
+    if not conexion:
+        return "Error al conectar con la base de datos", 500
+
+    cursor = conexion.cursor(dictionary=True)
+
+    try:
+        hoy = datetime.now().date()
+        cursor.execute("""
+            SELECT nombre, matricula, equipo, cantidad,
+                   DATE_FORMAT(fecha, '%H:%i') AS hora_prestamo,
+                   DATE_FORMAT(updated_at, '%H:%i') AS hora_devolucion,
+                   'Administrador' AS entregado_por  -- ajusta según tu estructura real
+            FROM prestamos_realizados
+            WHERE devuelto = 1 AND DATE(updated_at) = %s
+            ORDER BY updated_at DESC
+        """, (hoy,))
+        devueltos = cursor.fetchall()
+        return render_template('User/devueltos.html', devueltos=devueltos)
+
+    except mysql.connector.Error as err:
+        print("Error SQL:", err)
+        return "Error al obtener los datos", 500
+
+    finally:
+        cursor.close()
+        conexion.close()
+
+
+        
 
 # -------------------- INICIO --------------------
 if __name__ == '__main__':
