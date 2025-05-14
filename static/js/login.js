@@ -28,7 +28,6 @@ userTypeSelect.addEventListener('change', function () {
 signUpForm.addEventListener('submit', function (event) {
     event.preventDefault();
 
-    // Tomar los valores desde los campos correctos
     const nameInput = signUpForm.querySelector('input[name="name"]');
     const emailInput = signUpForm.querySelector('input[name="email"]');
     const passwordInput = signUpForm.querySelector('input[name="password"]');
@@ -36,7 +35,6 @@ signUpForm.addEventListener('submit', function (event) {
     const adminKeyInput = document.getElementById('adminKey');
     const sessionKeyInput = document.getElementById('sessionKey');
 
-    // Validaciones según el tipo de usuario
     if (!nameInput.value || !emailInput.value || !passwordInput.value) {
         alert("Por favor, completa todos los campos.");
         return;
@@ -52,7 +50,6 @@ signUpForm.addEventListener('submit', function (event) {
         return;
     }
 
-    // Construir el formulario para enviar al servidor
     const formData = new FormData();
     formData.append('name', nameInput.value);
     formData.append('email', emailInput.value);
@@ -61,33 +58,32 @@ signUpForm.addEventListener('submit', function (event) {
     formData.append('adminKey', adminKeyInput.value);
     formData.append('sessionKey', sessionKeyInput.value);
 
-    // Enviar al backend con fetch
-    fetch('http://127.0.0.1:5000/registro', {
+    fetch('/registro', {
         method: 'POST',
         body: formData
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('✅ Registro exitoso. Ahora puedes iniciar sesión.');
-                signUpForm.reset();
-                container.classList.remove("active"); // Cambiar al formulario de login
-            } else {
-                alert('❌ Error en el registro: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error en la petición de registro:', error);
-            alert('⚠️ Ocurrió un error al comunicarse con el servidor para el registro.');
-        });
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ Registro exitoso. Ahora puedes iniciar sesión.');
+            signUpForm.reset();
+            container.classList.remove("active");
+        } else {
+            alert('❌ Error en el registro: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error en la petición de registro:', error);
+        alert('⚠️ Ocurrió un error al comunicarse con el servidor para el registro.');
+    });
 });
 
 // -------------------- INICIO DE SESIÓN --------------------
 signInForm.addEventListener('submit', function (event) {
     event.preventDefault();
 
-    const userEmailInput = signInForm.querySelector('input[placeholder="Usuario"]');
-    const passwordInput = signInForm.querySelector('input[placeholder="Contraseña"]');
+    const userEmailInput = signInForm.querySelector('input[name="user"]');
+    const passwordInput = signInForm.querySelector('input[name="password"]');
 
     if (!userEmailInput.value || !passwordInput.value) {
         alert("Por favor, ingresa tu usuario y contraseña.");
@@ -98,25 +94,33 @@ signInForm.addEventListener('submit', function (event) {
     formData.append('user', userEmailInput.value);
     formData.append('password', passwordInput.value);
 
-    fetch('http://127.0.0.1:5000/templates/login', {
+    fetch('/login', {   // asegúrate de que app.py tenga también @app.route('/login')
         method: 'POST',
         body: formData
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("✅ Inicio de sesión exitoso.");
-                if (data.rol === 'admin') {
-                    window.location.href = '/PanelAdmin';
-                } else if (data.rol === 'student') {
-                    window.location.href = '/prestamos';
-                }
-            } else {
-                alert('❌ Error al iniciar sesión: ' + data.message);
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // --- MEJORAS CLAVE AQUÍ ---
+            localStorage.setItem('sesion_id', data.sesion_id);
+            localStorage.setItem('usuario_id', data.usuario_id); // Guardamos el ID del usuario (admin o estudiante)
+            localStorage.setItem('user_role', data.rol);         // Guardamos el rol
+
+            if (data.rol === 'admin') {
+                localStorage.setItem('admin_id', data.usuario_id); // ✅  GUARDAR admin_id (usuario_id)
+                // Opcional: localStorage.setItem('adminEmail', userEmailInput.value); // Guardar email del admin
+                window.location.href = '/PanelAdmin';
+            } else if (data.rol === 'student') {
+                window.location.href = '/prestamos';
             }
-        })
-        .catch(error => {
-            console.error('Error en la petición de inicio de sesión:', error);
-            alert('⚠️ Ocurrió un error al comunicarse con el servidor para iniciar sesión.');
-        });
+
+            alert("✅ Inicio de sesión exitoso.");
+        } else {
+            alert('❌ Error al iniciar sesión: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error en la petición de inicio de sesión:', error);
+        alert('⚠️ Ocurrió un error al comunicarse con el servidor para iniciar sesión.');
+    });
 });
