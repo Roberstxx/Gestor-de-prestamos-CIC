@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Realiza tu préstamo</title>
+    <style>
+        /* ... [tus estilos actuales sin cambios] ... */
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #c9d6ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .main-container {
+            width: 95%;
+            max-width: 1100px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .content {
+            display: flex;
+            gap: 30px;
+            justify-content: space-between;
+        }
+
+        .form-box,
+        .equipment-box {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .add-equipment {
+            margin-bottom: 15px;
+            cursor: pointer;
+            color: #0072ff;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .equipment-entry {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .equipment-entry input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .remove-btn {
+            color: red;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* BOTONES */
+        .footer-buttons {
+            margin-top: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 190px;
+        }
+
+        .footer-buttons button {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-devueltos {
+            background-color: #ffdd00;
+            color: #2d2d2d;
+        }
+
+        .btn-devueltos:hover {
+            background-color: #f5cf00;
+            box-shadow: 0 0 10px #ffdd00;
+        }
+
+        .btn-prestar {
+            background-color: #0072ff;
+            color: #ffffff;
+        }
+
+        .btn-prestar:hover {
+            background-color: #005ce6;
+            box-shadow: 0 0 12px #0072ff;
+        }
+
+        .btn-pendientes {
+            background-color: #ffdd00;
+            color: #2d2d2d;
+        }
+
+        .btn-pendientes:hover {
+            background-color: #f5cf00;
+            box-shadow: 0 0 10px #ffdd00;
+        }
+
+        .footer-buttons button:hover {
+            transform: translateY(-2px);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #ffe599;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 22px;
+            line-height: 40px;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: #000;
+        }
+
+        #equipmentList {
+            max-height: 400px;
+            /* Ajusta según lo que te parezca visualmente correcto */
+            overflow-y: auto;
+            padding-right: 8px;
+            /* Opcional: evita que se corte contenido por el scrollbar */
+        }
+    </style>
+</head>
+
+<body>
+
+<a href="#" class="back-btn">&#8592;</a>
+
+<div class="main-container">
+    <h2>Realiza tu préstamo</h2>
+    <div class="content">
+
+        <!-- Formulario de datos -->
+        <div class="form-box">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" placeholder="Nombre">
+            </div>
+            <div class="form-group">
+                <label for="matricula">Matrícula:</label>
+                <input type="text" id="matricula" placeholder="Matrícula">
+            </div>
+            <div class="form-group">
+                <label for="tipo-area">Tipo Área:</label>
+                <select id="tipo-area">
+                    <option value="">Selecciona un tipo</option>
+                    <option value="laboratorio">Laboratorio</option>
+                    <option value="aula">Aula</option>
+                    <option value="sala cic">Sala CIC</option>
+                    <option value="sala maestros">Sala de maestros</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edificio">Edificio:</label>
+                <select id="edificio">
+                    <option value="">Selecciona un edificio</option>
+                    <option value="A">Edificio A</option>
+                    <option value="B">Edificio B</option>
+                    <option value="C">Edificio C</option>
+                    <option value="D">Edificio D</option>
+                    <option value="E">Edificio E</option>
+                    <option value="F">Edificio F</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="area">Área:</label>
+                <input type="text" id="area" placeholder="Área">
+            </div>
+        </div>
+
+        <!-- Equipos -->
+        <div class="equipment-box">
+            <div class="add-equipment" onclick="addEquipment()">+ Añadir equipo</div>
+            <div id="equipmentList"></div>
+        </div>
+    </div>
+
+    <div class="footer-buttons">
+        <button class="btn-devueltos" onclick="window.location.href='/User/devueltos'">Devueltos</button>
+
+        <button class="btn-prestar" onclick="enviarFormulario()">Prestar</button>
+        <button class="btn-pendientes" onclick="window.location.href='/pendientes'">Pendientes</button>
+
+
+
+</div>
+    </div>
+</div>
+
+<script>
+    function addEquipment() {
+        const container = document.getElementById('equipmentList');
+        const div = document.createElement('div');
+        div.className = 'equipment-entry';
+        div.innerHTML = `
+            <input type="text" class="equipo" placeholder="Equipo">
+            <input type="number" class="cantidad" placeholder="Cantidad" min="1">
+            <span class="remove-btn" onclick="this.parentElement.remove()">×</span>
+        `;
+        container.appendChild(div);
+    }
+
+    function enviarFormulario() {
+        const nombre = document.getElementById('nombre').value.trim();
+        const matricula = document.getElementById('matricula').value.trim();
+        const tipo_area = document.getElementById('tipo-area').value;
+        const edificio = document.getElementById('edificio').value;
+        const area = document.getElementById('area').value.trim();
+
+        const usuario_id = localStorage.getItem('usuario_id'); // ✅ Se obtiene del localStorage
+
+        if (!usuario_id) {
+            alert("⚠️ No se ha encontrado información del usuario. Por favor inicia sesión nuevamente.");
+            return;
+        }
+
+        const equipos = document.querySelectorAll('.equipment-entry');
+        if (!nombre || !matricula || !tipo_area || !edificio || !area) {
+            alert("Todos los campos deben estar completos.");
+            return;
+        }
+
+        if (equipos.length === 0) {
+            alert("Debes añadir al menos un equipo.");
+            return;
+        }
+
+        let equipoValido = false;
+        equipos.forEach(entry => {
+            const eq = entry.querySelector('.equipo').value.trim();
+            const cant = entry.querySelector('.cantidad').value;
+            if (eq && cant > 0) equipoValido = true;
+        });
+
+        if (!equipoValido) {
+            alert("Todos los equipos deben tener nombre y cantidad válida (> 0).");
+            return;
+        }
+
+        // Enviar datos al servidor (por cada equipo)
+        equipos.forEach(entry => {
+            const equipo = entry.querySelector('.equipo').value.trim();
+            const cantidad = entry.querySelector('.cantidad').value;
+
+            if (equipo && cantidad > 0) {
+                const formData = new FormData();
+                formData.append('usuario_id', usuario_id);
+                formData.append('nombre', nombre);
+                formData.append('matricula', matricula);
+                formData.append('tipo_area', tipo_area);
+                formData.append('area', area);
+                formData.append('edificio', edificio);
+                formData.append('equipo', equipo);
+                formData.append('cantidad', cantidad);
+
+                // --- MODIFICACIÓN IMPORTANTE: Obtener y enviar admin_id ---
+                const admin_id = localStorage.getItem('admin_id'); // ✅ Obtener admin_id del localStorage
+                if (!admin_id) {
+                    alert("⚠️ No se ha encontrado información del administrador. Por favor, asegúrate de haber iniciado sesión como administrador.");
+                    return; // Detener el proceso si no hay admin_id
+                }
+                formData.append('admin_id', admin_id); // ✅ Añadir admin_id
+                // --- FIN DE LA MODIFICACIÓN ---
+
+                fetch('/registrar_prestamo', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("✅ Préstamo registrado correctamente");
+                        location.reload(); // recarga la página
+                    } else {
+                        alert("❌ Error: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al enviar préstamo:", error);
+                    alert("⚠️ Error al enviar el formulario.");
+                });
+            }
+        });
+    }
+</script>
+
+
+</body>
+
+</html>
