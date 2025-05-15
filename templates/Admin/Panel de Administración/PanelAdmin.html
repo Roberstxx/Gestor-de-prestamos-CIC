@@ -1,110 +1,136 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Administración</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #d8ecff; /* Azul claro */
-      color: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administrador</title>
+    <style>
+        /* Estilo general */
+        body {
+            background-color: #c9d6ff; /* Gris claro de fondo */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: #333; /* Gris oscuro para el texto */
+            margin: 0;
+            padding: 0;
+        }
 
-    h1 {
-      margin-top: 30px;
-      font-size: 2rem;
-      color: #1c1c1c;
-    }
+        h1 {
+            color: #0056b3; /* Azul */
+            font-size: 36px;
+            padding-top: 50px;
+        }
 
-    .menu {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      justify-content: center;
-      margin-top: 50px;
-    }
+        /* Contenedor de iconos */
+        .icon-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 50px;
+            gap: 40px;
+            padding: 20px;
+        }
 
-    .card {
-      background-color: #f2f2f2; /* gris claro */
-      border: 2px solid #444; /* gris oscuro */
-      border-radius: 20px;
-      width: 220px;
-      height: 140px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 15px;
-      transition: transform 0.2s, box-shadow 0.3s;
-      cursor: pointer;
-    }
+        /* Caja de icono */
+        .icon-box {
+            width: 120px;
+            text-align: center;
+            background-color: #ffffff; /* Blanco */
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
+        /* Efecto al pasar el ratón */
+        .icon-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
 
-    .card span {
-      font-size: 2rem;
-      margin-bottom: 10px;
-    }
+        .icon-box img {
+            width: 80px;
+            height: 80px;
+            transition: transform 0.3s ease;
+        }
 
-    .card p {
-      font-size: 1.1rem;
-      margin: 0;
-      font-weight: bold;
-    }
+        /* Animación de imagen */
+        .icon-box img:hover {
+            transform: scale(1.2);
+        }
 
-    .yellow-btn {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      background-color: #ffd700; /* amarillo brillante */
-      border: 2px solid #444;
-      border-radius: 12px;
-      padding: 8px 18px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1rem;
-    }
+        .icon-box p {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333; /* Gris oscuro para los textos */
+        }
 
-    .yellow-btn:hover {
-      background-color: #f1c40f;
-    }
-  </style>
+        /* Botón "Volver" */
+        .volver-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #ffc107; /* Amarillo */
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .volver-button:hover {
+            background-color: #e0a800;
+        }
+
+        .volver-button img {
+            width: 24px; /* Ícono más pequeño */
+            height: 24px;
+        }
+
+    </style>
 </head>
 <body>
-  <button class="yellow-btn">Atrás</button>
-  <h1>Panel de Administración</h1>
-  <div class="menu">
-    <div class="card">
-      <span>📦</span>
-      <p>Inventario</p>
+    <button class="volver-button">
+        <img src="static/icons/back.png" alt="Volver">
+        Volver
+    </button>
+
+    <h1>Panel de Administración</h1>
+    <div class="icon-container">
+        <a href="/inventario" style="text-decoration: none; color: inherit;">
+            <div class="icon-box">
+                <img src="static/icons/inventario.png" alt="Inventario">
+                <p>Inventario</p>
+            </div>
+        </a>
+
+        <a href="/admin/historial" style="text-decoration: none; color: inherit;">
+    <div class="icon-box">
+        <img src="static/icons/historial.png" alt="Historial">
+        <p>Historial</p>
     </div>
-    <div class="card">
-      <span>📜</span>
-      <p>Historial de Préstamos</p>
+</a>
+
+
+
+        <div class="icon-box">
+            <img src="static/icons/reportes.png" alt="Reportes">
+            <p>Reportes</p>
+        </div>
+        <div class="icon-box">
+            <img src="static/icons/bitacora.png" alt="Bitácora">
+            <p>Bitácora</p>
+        </div>
+        <div class="icon-box">
+            <img src="static/icons/perfiles.png" alt="Perfiles">
+            <p>Perfiles</p>
+        </div>
     </div>
-    <div class="card">
-      <span>👥</span>
-      <p>Perfiles</p>
-    </div>
-    <div class="card">
-      <span>📊</span>
-      <p>Reportes</p>
-    </div>
-    <div class="card">
-      <span>📂</span>
-      <p>Bitácora</p>
-    </div>
-  </div>
 </body>
 </html>
