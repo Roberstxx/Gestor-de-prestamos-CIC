@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devoluciones Pendientes</title>
+  <style>
+    /* === PALETA DE COLORES === */
+    /* Define variables CSS (custom properties) para los colores principales del sitio. */
+    :root {
+      --yellow: #FFD700; /* Amarillo dorado */
+      --gray-dark: #333333; /* Gris oscuro */
+      --gray-light: #F2F2F2; /* Gris claro */
+      --blue-strong: #0057B8; /* Azul fuerte */
+      --white: #FFFFFF; /* Blanco */
+      --black: #000000; /* Negro */
+    }
+
+    /* === ESTILOS GENERALES === */
+    /* Aplica estilos a todos los elementos de la página. */
+    * {
+      box-sizing: border-box; /* Incluye el padding y el border dentro del ancho y alto de un elemento. */
+      margin: 0; /* Elimina el margen predeterminado de los elementos. */
+      padding: 0; /* Elimina el relleno predeterminado de los elementos. */
+      font-family: 'Segoe UI', sans-serif; /* Establece la fuente de texto predeterminada. */
+    }
+
+    /* Estilos para el elemento body (el cuerpo de la página). */
+    body {
+      background-color: var(--gray-light); /* Establece el color de fondo usando la variable --gray-light. */
+      padding: 2rem; /* Añade un relleno de 2 rem alrededor del contenido del body. */
+      color: var(--gray-dark); /* Establece el color de texto predeterminado usando la variable --gray-dark. */
+    }
+
+    /* === CONTENEDOR PRINCIPAL === */
+    /* Estilos para el contenedor principal de la lista de devoluciones pendientes. */
+    .container {
+      max-width: 1000px; /* Establece un ancho máximo para el contenedor. */
+      margin: auto; /* Centra el contenedor horizontalmente en la página. */
+      background-color: var(--white); /* Establece el color de fondo del contenedor en blanco. */
+      padding: 2rem; /* Añade un relleno de 2 rem dentro del contenedor. */
+      border-radius: 20px; /* Redondea las esquinas del contenedor. */
+      border: 2px solid var(--gray-dark); /* Añade un borde gris oscuro al contenedor. */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Añade una sombra suave al contenedor. */
+    }
+
+    /* === BARRA SUPERIOR === */
+    /* Estilos para la barra superior que contiene el botón de "Atrás" y el título. */
+    .top-bar {
+      display: flex; /* Utiliza Flexbox para alinear los elementos horizontalmente. */
+      align-items: center; /* Alinea verticalmente los elementos al centro. */
+      justify-content: space-between; /* Distribuye el espacio entre los elementos. */
+      margin-bottom: 2rem; /* Añade un margen inferior para separar la barra del contenido principal. */
+    }
+
+    /* === BOTONES "ATRÁS" Y "DEVUELTOS DEL DÍA" === */
+    /* Estilos comunes para los botones de "Atrás" y "Devueltos del día". */
+    .back-button,
+    .day-button {
+      background-color: var(--yellow); /* Usa el color de fondo definido en --yellow. */
+      border: none; /* Elimina el borde del botón. */
+      padding: 0.6rem 1.5rem; /* Añade relleno vertical y horizontal al botón. */
+      font-weight: bold; /* Pone el texto del botón en negrita. */
+      font-size: 1rem; /* Establece el tamaño de la fuente del botón. */
+      border-radius: 10px; /* Redondea las esquinas del botón. */
+      box-shadow: 2px 2px 4px rgba(0,0,0,0.2); /* Añade una sombra al botón. */
+      cursor: pointer; /* Cambia el cursor al pasar por encima, indicando que es interactivo. */
+      transition: background 0.3s ease; /* Añade una transición suave para el cambio de color de fondo. */
+    }
+
+    /* Estilos para cuando se pasa el ratón por encima de los botones. */
+    .back-button:hover,
+    .day-button:hover {
+      background-color: #e6c200; /* Un tono ligeramente más oscuro del amarillo al pasar el ratón. */
+    }
+
+    /* === TÍTULO PRINCIPAL === */
+    /* Estilos para el título principal de la página (h1). */
+    .title {
+      text-align: center; /* Centra el texto del título. */
+      font-size: 2rem; /* Establece el tamaño de la fuente del título. */
+      flex-grow: 1; /* Permite que el título ocupe el espacio restante en la barra superior. */
+      color: var(--black); /* Usa el color del texto definido en --black. */
+    }
+
+    /* === BARRA DE BÚSQUEDA === */
+    /* Estilos para la barra de búsqueda de préstamos pendientes. */
+    .search-bar {
+      margin: 0 auto 2rem; /* Centra la barra de búsqueda horizontalmente y añade un margen inferior. */
+      display: flex; /* Utiliza Flexbox para alinear elementos dentro de la barra de búsqueda (aunque solo haya un input aquí). */
+      justify-content: center; /* Centra el input dentro de la barra de búsqueda. */
+    }
+
+    /* Estilos para el campo de entrada de la búsqueda. */
+    .search-input {
+      width: 60%; /* Establece el ancho del campo de entrada al 60% de su contenedor. */
+      padding: 0.6rem 1rem; /* Añade relleno dentro del campo de entrada. */
+      border: 2px solid var(--gray-dark); /* Añade un borde gris oscuro al campo de entrada. */
+      border-radius: 10px; /* Redondea las esquinas del campo de entrada. */
+      font-size: 1rem; /* Establece el tamaño de la fuente dentro del campo de entrada. */
+      background-color: var(--white); /* Establece el color de fondo del campo de entrada en blanco. */
+      box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1); /* Añade una sombra interior suave al campo de entrada. */
+    }
+
+    /* === CONTENEDOR DE TARJETAS EN GRILLA === */
+    /* Estilos para el contenedor que organiza las tarjetas de préstamos pendientes en una grilla. */
+    .grid {
+      display: grid; /* Utiliza la propiedad display grid para crear un diseño de grilla. */
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); /* Define las columnas de la grilla para que se auto-ajusten con un ancho mínimo de 260px y máximo de 1fr (fracción del espacio disponible). */
+      gap: 1rem; /* Establece un espacio de 1 rem entre las celdas de la grilla (tanto filas como columnas). */
+    }
+
+    /* === TARJETA DE PRÉSTAMO PENDIENTE === */
+    /* Estilos para cada tarjeta que muestra la información de un préstamo pendiente. */
+    .card {
+      background-color: var(--blue-strong); /* Establece el color de fondo de la tarjeta en azul fuerte. */
+      color: var(--white); /* Establece el color del texto dentro de la tarjeta en blanco. */
+      border-radius: 16px; /* Redondea las esquinas de la tarjeta. */
+      padding: 1rem; /* Añade un relleno dentro de la tarjeta. */
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* Añade una sombra suave a la tarjeta. */
+      position: relative; /* Establece la posición como relativa para poder posicionar elementos absolutos dentro (como el botón de "Devolver"). */
+    }
+
+    /* Estilos para los párrafos dentro de la tarjeta. */
+    .card p {
+      margin-bottom: 0.3rem; /* Añade un pequeño margen inferior a los párrafos. */
+    }
+
+    /* Estilos para la información de la cantidad del equipo pendiente. */
+    .card .cantidad {
+      text-align: right; /* Alinea el texto de la cantidad a la derecha. */
+      font-weight: bold; /* Pone el texto de la cantidad en negrita. */
+    }
+
+    /* === BOTÓN "DEVOLVER" EN LA TARJETA === */
+    /* Estilos para el botón de "Devolver" dentro de cada tarjeta de préstamo pendiente. */
+    .card .btn-devolver {
+      position: absolute; /* Posiciona el botón de forma absoluta dentro de su contenedor relativo (.card). */
+      top: 1rem; /* Lo coloca a 1 rem desde la parte superior de la tarjeta. */
+      right: 1rem; /* Lo coloca a 1 rem desde la parte derecha de la tarjeta. */
+      background-color: var(--yellow); /* Usa el color de fondo definido en --yellow. */
+      color: var(--black); /* Establece el color del texto en negro. */
+      border: none; /* Elimina el borde del botón. */
+      border-radius: 8px; /* Redondea las esquinas del botón. */
+      padding: 0.3rem 0.8rem; /* Añade un pequeño relleno al botón. */
+      font-weight: bold; /* Pone el texto del botón en negrita. */
+      cursor: pointer; /* Cambia el cursor al pasar por encima. */
+      box-shadow: 2px 2px 4px rgba(0,0,0,0.2); /* Añade una sombra al botón. */
+      transition: background 0.3s ease; /* Añade una transición suave para el cambio de color de fondo. */
+    }
+
+    /* Estilo para cuando se pasa el ratón por encima del botón "Devolver". */
+    .card .btn-devolver:hover {
+      background-color: #e6c200; /* Un tono ligeramente más oscuro del amarillo al pasar el ratón. */
+    }
+
+    /* === PIE DE PÁGINA === */
+    /* Estilos para el pie de página, que contiene el botón de "Devueltos del día". */
+    .footer {
+      text-align: right; /* Alinea el texto y los elementos del pie de página a la derecha. */
+      margin-top: 2rem; /* Añade un margen superior para separar el pie de página del contenido principal. */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <button class="back-button" onclick="window.location.href='/prestamos'">Atrás</button>
+
+      <h1 class="title">Devoluciones Pendientes</h1>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" class="search-input" placeholder="🔍 Buscar" />
+    </div>
+
+    <!-- AQUÍ el ID CORRECTO -->
+    <div class="grid" id="cards-container">
+      <!-- Las tarjetas se generarán dinámicamente aquí -->
+    </div>
+  </div>
+
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const sesionId = localStorage.getItem("sesion_id");  // Asegúrate de haber guardado esto tras el login
+
+  if (!sesionId) {
+    alert("No se encontró el ID de sesión. Vuelve a iniciar sesión.");
+    return;
+  }
+
+  fetch(`/api/prestamos_pendientes/${sesionId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+
+      const container = document.getElementById("cards-container");
+      container.innerHTML = "";
+
+      data.data.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <button class="btn-devolver" data-id="${item.id}">Devolver</button>
+          <p><strong>${item.nombre}</strong></p>
+          <p>${item.matricula}</p>
+          <p>${item.equipo}</p>
+          <p class="cantidad">Cantidad: ${item.cantidad}</p>
+        `;
+        container.appendChild(card);
+      });
+
+      // Agrega listeners a todos los botones de devolver
+      document.querySelectorAll(".btn-devolver").forEach(button => {
+        button.addEventListener("click", () => {
+          const prestamoId = button.getAttribute("data-id");
+
+          fetch(`/api/devolver_prestamo/${prestamoId}`, {
+            method: "POST"
+          })
+          .then(res => res.json())
+          .then(result => {
+            if (result.success) {
+              // Elimina la tarjeta visualmente
+              button.parentElement.remove();
+            } else {
+              alert("Error al marcar como devuelto: " + result.message);
+            }
+          })
+          .catch(err => {
+            console.error("Error en la solicitud de devolución:", err);
+          });
+        });
+      });
+
+    })
+    .catch(error => {
+      console.error("Error cargando préstamos pendientes:", error);
+    });
+});
+</script>
+
+</body>
+</html>
+
