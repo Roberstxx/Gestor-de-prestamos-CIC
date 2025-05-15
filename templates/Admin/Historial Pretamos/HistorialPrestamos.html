@@ -2,153 +2,312 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de Préstamos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #87CEEB;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: 'Arial', sans-serif;
             margin: 0;
-        }
-        .container {
-            background-color: #ADD8E6;
-            border-radius: 10px;
             padding: 20px;
-            width: 80%;
-            height: 80%;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
+            background-color: #e0e0e0;
+            color: #333;
         }
-        .header {
-            background-color: #FFD700;
-            padding: 10px;
-            border-radius: 5px;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #0a5a9b;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        h1 {
             text-align: center;
-            font-weight: bold;
+            color: #e9e7de;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #fcca04;
         }
-        .form-group {
-            margin: 10px 0;
+
+        .filtros {
+            background-color: #e6e6dc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #d2e90b;
+        }
+
+        .filtros h2 {
+            margin-top: 0;
+            color: #050000;
+            font-size: 1.2em;
+            border-bottom: 1px solid #50e9ec;
+            padding-bottom: 8px;
+        }
+
+        .grupo-filtros {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 10px;
         }
-        .form-group label {
+
+        .filtro {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
             margin-bottom: 5px;
+            font-weight: bold;
+            color: #020000;
         }
-        .form-group input, .form-group select {
+
+        input, select {
+            width: 100%;
             padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+            border: 1px solid #f6e9e9;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #e3e3dd;
         }
-        .filter-section {
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #e5e9eb;
+            background-color: #f0e1e1;
+        }
+
+        .botones {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
         }
-        .filter-group {
-            width: 100%;
-        }
-        .filter-group select {
-            width: 100%;
-            height: 40px; /* Aumentando tamaño */
-        }
-        .search-button {
-            background-color: #FFD700;
+
+        button {
+            padding: 10px 20px;
             border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px; /* Separación de los filtros */
-        }
-        .search-button img {
-            width: 24px;
-            height: 24px;
-        }
-        .report-section {
-            background-color: #E0FFFF;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            display: none;
-        }
-        .report-title {
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-        .report-item {
-            padding: 5px;
-            border-bottom: 1px solid #ccc;
-        }
-        .export-button {
-            background-color: #FFD700;
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-filtrar {
+            background-color: #68bacd;
+            color: #443e3e;
+            border: 1px solid #55b3b8;
+        }
+
+        .btn-filtrar:hover {
+            background-color: #137fd1;
+            color: #e5e9eb;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(235, 3, 3, 0.1);
+        }
+
+        .btn-pdf {
+            background-color: #54c3d0;
+            color: white;
+            border: 1px solid #4ab9d7;
+        }
+
+        .btn-pdf:hover {
+            background-color: #6edbdf;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tabla-contenedor {
+            overflow-x: auto;
+            background-color: #ebebdc;
+            border-radius: 5px;
+            padding: 1px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee7e7;
+        }
+
+        th {
+            background-color: #137fd9;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:nth-child(even) {
+            background-color: #ebecdb;
+        }
+
+        tr:hover {
+            background-color: #e8f1f3;
+            transition: background-color 0.2s;
+        }
+
+        td:hover {
+            background-color: #d4d4d4;
+        }
+
+        .sin-resultados {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-style: italic;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .estado-pendiente {
+            background-color: #fc0d00;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .estado-devuelto {
+            background-color: #2ecc71;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .grupo-filtros {
+                flex-direction: column;
+            }
+
+            .filtro {
+                width: 100%;
+            }
+
+            .botones {
+                justify-content: center;
+            }
+
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">Historial de Préstamos</div>
-        <div class="form-group">
-            <label for="fecha-inicio">FECHA INICIO</label>
-            <input type="date" id="fecha-inicio">
+    <div class="container" id="reporte">
+        <h1>Historial de Préstamos</h1>
+
+        <div class="filtros">
+            <h2>Filtros opcionales</h2>
+            <form id="filterForm">
+                <div class="grupo-filtros">
+                    <div class="filtro">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre del solicitante">
+                    </div>
+                    <div class="filtro">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fecha" name="fecha">
+                    </div>
+                    <div class="filtro">
+                        <label for="area">Área</label>
+                        <input type="text" id="area" name="area" placeholder="Área asignada">
+                    </div>
+                </div>
+                <div class="botones">
+                    <button type="submit" class="btn-filtrar">Filtrar</button>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="fecha-fin">FECHA FIN</label>
-            <input type="date" id="fecha-fin">
+
+        <div class="tabla-contenedor">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Nombre</th>
+                        <th>Matrícula</th>
+                        <th>Tipo Área</th>
+                        <th>Área</th>
+                        <th>Edificio</th>
+                        <th>Equipo</th>
+                        <th>Cantidad</th>
+                        <th>Devuelto</th>
+                        <th>Actualizado</th>
+                        <th>Registrado por</th>
+                        <th>Sesión</th>
+                    </tr>
+                </thead>
+                <tbody>
+    {% if historial %}
+        {% for prestamo in historial %}
+        <tr>
+            <td>{{ prestamo.id }}</td>
+            <td>{{ prestamo.fecha }}</td>
+            <td>{{ prestamo.nombre }}</td>
+            <td>{{ prestamo.matricula }}</td>
+            <td>{{ prestamo.tipo_area }}</td>
+            <td>{{ prestamo.area }}</td>
+            <td>{{ prestamo.edificio }}</td>
+            <td>{{ prestamo.equipo }}</td>
+            <td>{{ prestamo.cantidad }}</td>
+            <td>
+                {% if prestamo.devuelto %}
+                    <span class="estado-devuelto">Sí</span>
+                {% else %}
+                    <span class="estado-pendiente">No</span>
+                {% endif %}
+            </td>
+            <td>{{ prestamo.updated_at if prestamo.devuelto else '—' }}</td>
+            <td>{{ prestamo.nombre_usuario or 'N/A' }}</td>
+            <td>{{ prestamo.nombre_sesion or 'N/A' }}</td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="13" class="sin-resultados">No se encontraron registros.</td>
+        </tr>
+    {% endif %}
+</tbody>
+
+            </table>
         </div>
-        <div class="form-group">
-            <label for="usuario">USUARIO</label>
-            <input type="text" id="usuario" placeholder="Ingrese usuario">
+
+        <div class="botones" style="margin-top: 30px;">
+            <button type="button" class="btn-pdf" id="exportBtn">Exportar a PDF</button>
         </div>
-        <div class="filter-section">
-            <div class="filter-group">
-                <label for="tipo-equipo">TIPO DE EQUIPO</label>
-                <select id="tipo-equipo">
-                    <option value="todos">TODOS</option>
-                    <option value="laptop">Laptop</option>
-                    <option value="hdmi">HDMI</option>
-                    <option value="proyector">Proyector</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="estado">ESTADO</label>
-                <select id="estado">
-                    <option value="devuelto">Devuelto</option>
-                    <option value="pendiente">Pendiente</option>
-                </select>
-            </div>
-            <button class="search-button" onclick="mostrarReportes()">
-                <img src="https://cdn-icons-png.flaticon.com/512/54/54481.png" alt="Buscar">
-            </button>
-        </div>
-        <div id="reportes">
-            <div class="report-section">
-                <div class="report-title">Equipos devueltos</div>
-                <div class="report-item">HDMI - Perla Karime - Devuelto</div>
-            </div>
-            <div class="report-section">
-                <div class="report-title">Equipos pendientes</div>
-                <div class="report-item">Laptop - Heribe Huribe - Pendiente</div>
-            </div>
-        </div>
-        <div class="export-button">Exportar</div>
     </div>
 
     <script>
-        function mostrarReportes() {
-            document.querySelectorAll('.report-section').forEach(section => {
-                section.style.display = 'block';
-            });
-        }
+        document.getElementById('exportBtn').addEventListener('click', function () {
+            const element = document.getElementById('reporte');
+            const opt = {
+                margin: 0.3,
+                filename: 'reporte_prestamos.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+            };
+            html2pdf().set(opt).from(element).save();
+        });
     </script>
 </body>
 </html>
