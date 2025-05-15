@@ -1,105 +1,150 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Inventario</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f9f9;
-      color: #222;
-      padding: 2rem;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      max-width: 800px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: space-between;
-    }
-    label {
-      flex: 1 1 45%;
-      display: flex;
-      flex-direction: column;
-      font-weight: 500;
-      gap: 0.25rem;
-    }
-    input, select {
-      padding: 0.5rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    .buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
-      margin-top: 1rem;
-    }
-    button {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: bold;
-      color: #000;
-    }
-    .yellow {
-      background: #FFD700;
-    }
-    .blue {
-      background: #3399FF;
-      color: white;
-    }
-    .dark {
-      background: #333;
-      color: white;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario Centro de Cómputo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-start mb-3">
+            <a href="/paneladmin" class="btn btn-warning">&larr; Atrás</a>
 
-  <h2>Gestión de Inventario</h2>
-  <form class="card">
-    <label>Nombre del equipo:
-      <input type="text" />
-    </label>
-    <label>Tipo:
-      <select>
-        <option>Proyector</option>
-        <option>Laptop</option>
-        <option>HDMI</option>
-        <option>Mouse</option>
-      </select>
-    </label>
-    <label>Cantidad:
-      <input type="number" />
-    </label>
-    <label>Estado:
-      <select>
-        <option>Disponible</option>
-        <option>En reparación</option>
-      </select>
-    </label>
-    <label>Ubicación:
-      <input type="text" />
-    </label>
-    <div class="buttons">
-      <button class="yellow">Agregar</button>
-      <button class="blue">Actualizar</button>
-      <button class="dark">Eliminar</button>
+
+        </div>
+
+        <h1 class="text-center mb-4">Inventario Centro de Cómputo</h1>
+
+
+        <!-- Formulario para agregar equipo -->
+        <form id="form-agregar" class="mb-5">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="nombre" placeholder="Nombre del equipo" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" id="tipo" placeholder="Tipo (PC, Monitor, etc.)" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" id="marca" placeholder="Marca" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" id="numero_serie" placeholder="Número de serie" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" class="form-control" id="fecha" required>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary w-100">Agregar</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Tabla de equipos -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Marca</th>
+                    <th>Número de Serie</th>
+                    <th>Fecha de Adquisición</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-inventario">
+                <!-- Se llenará dinámicamente -->
+            </tbody>
+        </table>
     </div>
-  </form>
 
+    <script>
+        // Cargar el inventario
+        async function cargarInventario() {
+            try {
+                const respuesta = await fetch('/api/inventario');
+                const equipos = await respuesta.json();
+                const tabla = document.getElementById('tabla-inventario');
+                tabla.innerHTML = '';
+
+                equipos.forEach(e => {
+                    tabla.innerHTML += `
+                        <tr>
+                            <td>${e.id}</td>
+                            <td>${e.nombre}</td>
+                            <td>${e.tipo}</td>
+                            <td>${e.marca}</td>
+                            <td>${e.numero_serie}</td>
+                            <td>${e.fecha_adquisicion}</td>
+                            <td><button class="btn btn-danger btn-sm" onclick="eliminarEquipo(${e.id})">Eliminar</button></td>
+                        </tr>`;
+                });
+            } catch (error) {
+                console.error('Error cargando inventario:', error);
+                alert('Error cargando el inventario');
+            }
+        }
+
+        // Agregar equipo
+        document.getElementById('form-agregar').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const datos = {
+                nombre: document.getElementById('nombre').value,
+                tipo: document.getElementById('tipo').value,
+                marca: document.getElementById('marca').value,
+                numero_serie: document.getElementById('numero_serie').value,
+                fecha_adquisicion: document.getElementById('fecha').value
+            };
+
+            try {
+                const res = await fetch('/api/inventario', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+
+                if (res.ok) {
+                    cargarInventario();
+                    e.target.reset();
+                } else {
+                    const err = await res.json();
+                    alert('Error al agregar equipo: ' + (err.error || 'desconocido'));
+                }
+            } catch (error) {
+                console.error('Error al agregar:', error);
+                alert('Error al agregar equipo');
+            }
+        });
+
+        // Eliminar equipo
+        async function eliminarEquipo(id) {
+            if (confirm('¿Estás seguro de eliminar este equipo?')) {
+                try {
+                    const res = await fetch(`/api/inventario/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (res.ok) {
+                        cargarInventario();
+                    } else {
+                        const err = await res.json();
+                        alert('Error al eliminar: ' + (err.error || 'desconocido'));
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar:', error);
+                    alert('Error al eliminar equipo');
+                }
+            }
+        }
+
+        // Cargar tabla al inicio
+        cargarInventario();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
