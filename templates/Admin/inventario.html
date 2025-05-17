@@ -3,149 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario Centro de Cómputo</title>
+    <title>Panel de Inventario</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .estado-activo { color: green; font-weight: bold; }
+        .estado-inactivo { color: orange; font-weight: bold; }
+        .estado-baja { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="d-flex justify-content-start mb-3">
-            <a href="/paneladmin" class="btn btn-warning">&larr; Atrás</a>
-
-
-        </div>
-
-        <h1 class="text-center mb-4">Inventario Centro de Cómputo</h1>
-
-
-        <!-- Formulario para agregar equipo -->
-        <form id="form-agregar" class="mb-5">
-            <div class="row g-3">
-                <div class="col-md-3">
-                    <input type="text" class="form-control" id="nombre" placeholder="Nombre del equipo" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" class="form-control" id="tipo" placeholder="Tipo (PC, Monitor, etc.)" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" class="form-control" id="marca" placeholder="Marca" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" class="form-control" id="numero_serie" placeholder="Número de serie" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="date" class="form-control" id="fecha" required>
-                </div>
-                <div class="col-md-1">
-                    <button type="submit" class="btn btn-primary w-100">Agregar</button>
-                </div>
-            </div>
-        </form>
-
-        <!-- Tabla de equipos -->
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Tipo</th>
-                    <th>Marca</th>
-                    <th>Número de Serie</th>
-                    <th>Fecha de Adquisición</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tabla-inventario">
-                <!-- Se llenará dinámicamente -->
-            </tbody>
-        </table>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between mb-4">
+        <a href="/paneladmin" class="btn btn-warning">&larr; Atrás</a>
+        <h2>Inventario Centro de Cómputo</h2>
     </div>
 
-    <script>
-        // Cargar el inventario
-        async function cargarInventario() {
-            try {
-                const respuesta = await fetch('/api/inventario');
-                const equipos = await respuesta.json();
-                const tabla = document.getElementById('tabla-inventario');
-                tabla.innerHTML = '';
+    <!-- Tarjetas con conteo por estado -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Equipos</h5>
+                    <p id="total-equipos" class="card-text">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Activos</h5>
+                    <p id="equipos-activos" class="card-text">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Inactivos</h5>
+                    <p id="equipos-inactivos" class="card-text">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Dados de Baja</h5>
+                    <p id="equipos-baja" class="card-text">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                equipos.forEach(e => {
-                    tabla.innerHTML += `
-                        <tr>
-                            <td>${e.id}</td>
-                            <td>${e.nombre}</td>
-                            <td>${e.tipo}</td>
-                            <td>${e.marca}</td>
-                            <td>${e.numero_serie}</td>
-                            <td>${e.fecha_adquisicion}</td>
-                            <td><button class="btn btn-danger btn-sm" onclick="eliminarEquipo(${e.id})">Eliminar</button></td>
-                        </tr>`;
-                });
-            } catch (error) {
-                console.error('Error cargando inventario:', error);
-                alert('Error cargando el inventario');
-            }
-        }
+    <!-- Formulario para agregar nuevo equipo -->
+    <form id="form-agregar" class="row g-3 mb-4">
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="nombre" placeholder="Nombre" required>
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="tipo" placeholder="Tipo" required>
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="marca" placeholder="Marca" required>
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="numero_serie" placeholder="Nº Serie" required>
+        </div>
+        <div class="col-md-2">
+            <input type="date" class="form-control" id="fecha" required>
+        </div>
+        <div class="col-md-2">
+            <input type="number" class="form-control" id="stock" placeholder="Stock" min="1" value="1" required>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Agregar</button>
+        </div>
+    </form>
 
-        // Agregar equipo
-        document.getElementById('form-agregar').addEventListener('submit', async (e) => {
-            e.preventDefault();
+    <!-- Tabla que muestra el inventario -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Marca</th>
+                <th>Serie</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Stock</th> <!-- Nuevo campo stock -->
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-inventario"></tbody>
+    </table>
+</div>
 
-            const datos = {
-                nombre: document.getElementById('nombre').value,
-                tipo: document.getElementById('tipo').value,
-                marca: document.getElementById('marca').value,
-                numero_serie: document.getElementById('numero_serie').value,
-                fecha_adquisicion: document.getElementById('fecha').value
-            };
+<!-- Modal para editar equipo -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="form-editar">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Equipo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editar-id">
+                    <div class="mb-3">
+                        <label for="editar-nombre" class="form-label">Nombre</label>
+                        <input type="text" id="editar-nombre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editar-estado" class="form-label">Estado</label>
+                        <select id="editar-estado" class="form-select">
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                            <option value="baja">Baja</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editar-observaciones" class="form-label">Observaciones</label>
+                        <textarea id="editar-observaciones" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-            try {
-                const res = await fetch('/api/inventario', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datos)
-                });
+<script>
+    // Carga los datos del inventario desde el backend y los muestra en la tabla
+    async function cargarInventario() {
+        const res = await fetch('/api/inventario');
+        const data = await res.json();
+        const tbody = document.getElementById('tabla-inventario');
+        tbody.innerHTML = '';
 
-                if (res.ok) {
-                    cargarInventario();
-                    e.target.reset();
-                } else {
-                    const err = await res.json();
-                    alert('Error al agregar equipo: ' + (err.error || 'desconocido'));
-                }
-            } catch (error) {
-                console.error('Error al agregar:', error);
-                alert('Error al agregar equipo');
-            }
+        let activos = 0, inactivos = 0, baja = 0;
+
+        data.forEach(equipo => {
+            let estadoClass = equipo.estado === 'activo' ? 'estado-activo' : equipo.estado === 'inactivo' ? 'estado-inactivo' : 'estado-baja';
+            if (equipo.estado === 'activo') activos++;
+            if (equipo.estado === 'inactivo') inactivos++;
+            if (equipo.estado === 'baja') baja++;
+
+            // Muestra los datos en cada fila, incluyendo el stock
+            tbody.innerHTML += `
+                <tr>
+                    <td>${equipo.id}</td>
+                    <td>${equipo.nombre}</td>
+                    <td>${equipo.tipo}</td>
+                    <td>${equipo.marca}</td>
+                    <td>${equipo.numero_serie}</td>
+                    <td class="${estadoClass}">${equipo.estado}</td>
+                    <td>${equipo.fecha_adquisicion}</td>
+                    <td>${equipo.stock ?? 1}</td> <!-- Mostrar stock, por defecto 1 si está ausente -->
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="abrirModalEditar(${equipo.id})">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="eliminarEquipo(${equipo.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `;
         });
 
-        // Eliminar equipo
-        async function eliminarEquipo(id) {
-            if (confirm('¿Estás seguro de eliminar este equipo?')) {
-                try {
-                    const res = await fetch(`/api/inventario/${id}`, {
-                        method: 'DELETE'
-                    });
+        // Actualiza contadores
+        document.getElementById('total-equipos').innerText = data.length;
+        document.getElementById('equipos-activos').innerText = activos;
+        document.getElementById('equipos-inactivos').innerText = inactivos;
+        document.getElementById('equipos-baja').innerText = baja;
+    }
 
-                    if (res.ok) {
-                        cargarInventario();
-                    } else {
-                        const err = await res.json();
-                        alert('Error al eliminar: ' + (err.error || 'desconocido'));
-                    }
-                } catch (error) {
-                    console.error('Error al eliminar:', error);
-                    alert('Error al eliminar equipo');
-                }
-            }
+    // Maneja envío del formulario para agregar equipo
+    document.getElementById('form-agregar').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const datos = {
+            nombre: nombre.value,
+            tipo: tipo.value,
+            marca: marca.value,
+            numero_serie: numero_serie.value,
+            fecha_adquisicion: fecha.value,
+            stock: parseInt(stock.value)
+        };
+
+        const res = await fetch('/api/inventario', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(datos)
+        });
+
+        if (res.ok) {
+            cargarInventario();
+            e.target.reset();
+        } else {
+            alert('Error al agregar');
         }
+    });
 
-        // Cargar tabla al inicio
-        cargarInventario();
-    </script>
+    // Abre el modal de edición con datos del equipo
+    function abrirModalEditar(id) {
+        fetch(`/api/inventario/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('editar-id').value = data.id;
+                document.getElementById('editar-nombre').value = data.nombre;
+                document.getElementById('editar-estado').value = data.estado;
+                document.getElementById('editar-observaciones').value = data.observaciones || '';
+                new bootstrap.Modal(document.getElementById('modalEditar')).show();
+            });
+    }
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    // Enviar cambios desde el modal de edición
+    document.getElementById('form-editar').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('editar-id').value;
+        const datos = {
+            nombre: document.getElementById('editar-nombre').value,
+            estado: document.getElementById('editar-estado').value,
+            observaciones: document.getElementById('editar-observaciones').value
+        };
+
+        const res = await fetch(`/api/inventario/${id}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(datos)
+        });
+
+        if (res.ok) {
+            bootstrap.Modal.getInstance(document.getElementById('modalEditar')).hide();
+            cargarInventario();
+        } else {
+            alert('Error al editar');
+        }
+    });
+
+    // Marca equipo como dado de baja
+    async function eliminarEquipo(id) {
+        if (confirm('Confirma eliminación (marcar como baja)')) {
+            await fetch(`/api/inventario/${id}/estado`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ estado: 'baja' })
+            });
+            cargarInventario();
+        }
+    }
+
+    // Cargar inventario al iniciar
+    cargarInventario();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 
