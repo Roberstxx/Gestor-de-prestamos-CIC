@@ -2,10 +2,10 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Realiza tu préstamo</title>
     <style>
-        /* ... [tus estilos actuales sin cambios] ... */
+        /* Tu CSS original, sin cambios */
         * {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -28,6 +28,7 @@
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
         h2 {
@@ -40,11 +41,13 @@
             display: flex;
             gap: 30px;
             justify-content: space-between;
+            flex-wrap: wrap;
         }
 
         .form-box,
         .equipment-box {
             flex: 1;
+            min-width: 280px;
             padding: 20px;
             border: 2px solid #ccc;
             border-radius: 12px;
@@ -61,6 +64,7 @@
         }
 
         input[type="text"],
+        input[type="number"],
         select {
             width: 100%;
             padding: 10px;
@@ -75,6 +79,7 @@
             color: #0072ff;
             font-weight: bold;
             text-decoration: underline;
+            user-select: none;
         }
 
         .equipment-entry {
@@ -84,11 +89,9 @@
             align-items: center;
         }
 
+        .equipment-entry select,
         .equipment-entry input {
             flex: 1;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
         }
 
         .remove-btn {
@@ -96,15 +99,16 @@
             cursor: pointer;
             font-size: 18px;
             font-weight: bold;
+            user-select: none;
         }
 
-        /* BOTONES */
         .footer-buttons {
             margin-top: 30px;
             text-align: center;
             display: flex;
             justify-content: center;
             gap: 190px;
+            flex-wrap: wrap;
         }
 
         .footer-buttons button {
@@ -117,6 +121,7 @@
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
+            min-width: 120px;
         }
 
         .btn-devueltos {
@@ -167,178 +172,250 @@
             cursor: pointer;
             text-decoration: none;
             color: #000;
+            user-select: none;
         }
 
         #equipmentList {
             max-height: 400px;
-            /* Ajusta según lo que te parezca visualmente correcto */
             overflow-y: auto;
             padding-right: 8px;
-            /* Opcional: evita que se corte contenido por el scrollbar */
         }
     </style>
 </head>
 
 <body>
+    
 
-<a href="#" class="back-btn">&#8592;</a>
+    <input type="hidden" id="profesor_id" />
 
-<div class="main-container">
-    <h2>Realiza tu préstamo</h2>
-    <div class="content">
 
-        <!-- Formulario de datos -->
-        <div class="form-box">
-            <div class="form-group">
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" placeholder="Nombre">
+    <a href="#" class="back-btn" title="Volver">←</a>
+
+    <div class="main-container">
+        <h2>Realiza tu préstamo</h2>
+
+        <div class="content">
+
+            <!-- Formulario -->
+            <div class="form-box">
+                <div class="form-group">
+    <label for="matricula">Matrícula del profesor:</label>
+    <input type="text" id="matricula" placeholder="Ej. A12345" />
+</div>
+
+<div class="form-group">
+    <label for="nombre-profesor">Nombre del profesor:</label>
+    <input type="text" id="nombre-profesor" readonly placeholder="Se mostrará automáticamente" />
+</div>
+
+                <div class="form-group">
+                    <label for="tipo-area">Tipo Área:</label>
+                    <select id="tipo-area"></select>
+                </div>
+                <div class="form-group">
+                    <label for="edificio">Edificio:</label>
+                    <select id="edificio"></select>
+                </div>
+                <div class="form-group">
+                    <label for="area">Área:</label>
+                    <select id="area"></select>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="matricula">Matrícula:</label>
-                <input type="text" id="matricula" placeholder="Matrícula">
+
+            <!-- Equipos -->
+            <div class="equipment-box">
+                <div class="add-equipment" onclick="addEquipment()">+ Añadir equipo</div>
+                <div id="equipmentList"></div>
             </div>
-            <div class="form-group">
-                <label for="tipo-area">Tipo Área:</label>
-                <select id="tipo-area">
-                    <option value="">Selecciona un tipo</option>
-                    <option value="laboratorio">Laboratorio</option>
-                    <option value="aula">Aula</option>
-                    <option value="sala cic">Sala CIC</option>
-                    <option value="sala maestros">Sala de maestros</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="edificio">Edificio:</label>
-                <select id="edificio">
-                    <option value="">Selecciona un edificio</option>
-                    <option value="A">Edificio A</option>
-                    <option value="B">Edificio B</option>
-                    <option value="C">Edificio C</option>
-                    <option value="D">Edificio D</option>
-                    <option value="E">Edificio E</option>
-                    <option value="F">Edificio F</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="area">Área:</label>
-                <input type="text" id="area" placeholder="Área">
-            </div>
+
         </div>
 
-        <!-- Equipos -->
-        <div class="equipment-box">
-            <div class="add-equipment" onclick="addEquipment()">+ Añadir equipo</div>
-            <div id="equipmentList"></div>
+        <div class="footer-buttons">
+            <button class="btn-devueltos" onclick="window.location.href='/User/devueltos'">Devueltos</button>
+            <button class="btn-prestar" onclick="enviarFormulario()">Prestar</button>
+            <button class="btn-pendientes" onclick="window.location.href='/pendientes'">Pendientes</button>
         </div>
     </div>
 
-    <div class="footer-buttons">
-        <button class="btn-devueltos" onclick="window.location.href='/User/devueltos'">Devueltos</button>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    cargarTiposArea();
+    cargarEdificios();
+    document.getElementById('tipo-area').addEventListener('change', cargarAreas);
+    document.getElementById('edificio').addEventListener('change', cargarAreas);
+});
 
-        <button class="btn-prestar" onclick="enviarFormulario()">Prestar</button>
-        <button class="btn-pendientes" onclick="window.location.href='/pendientes'">Pendientes</button>
+function cargarTiposArea() {
+    fetch('/api/tipos_area')
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById('tipo-area');
+            select.innerHTML = '<option value="">Selecciona un tipo</option>';
+            data.forEach(tipo => {
+                const option = document.createElement('option');
+                option.value = tipo;
+                option.textContent = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+                select.appendChild(option);
+            });
+        });
+}
 
+function cargarEdificios() {
+    fetch('/api/edificios')
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById('edificio');
+            select.innerHTML = '<option value="">Selecciona un edificio</option>';
+            data.forEach(edif => {
+                const option = document.createElement('option');
+                option.value = edif.id;
+                option.textContent = 'Edificio ' + edif.nombre;
+                select.appendChild(option);
+            });
+        });
+}
 
+function cargarAreas() {
+    const tipo = document.getElementById('tipo-area').value;
+    const edificioId = document.getElementById('edificio').value;
+    const selectArea = document.getElementById('area');
+    selectArea.innerHTML = '<option value="">Selecciona un área</option>';
 
-</div>
-    </div>
-</div>
+    if (!tipo || !edificioId) return;
 
-<script>
-    function addEquipment() {
-        const container = document.getElementById('equipmentList');
-        const div = document.createElement('div');
-        div.className = 'equipment-entry';
-        div.innerHTML = `
-            <input type="text" class="equipo" placeholder="Equipo">
-            <input type="number" class="cantidad" placeholder="Cantidad" min="1">
-            <span class="remove-btn" onclick="this.parentElement.remove()">×</span>
-        `;
-        container.appendChild(div);
+    fetch(`/api/areas?tipo=${encodeURIComponent(tipo)}&edificio_id=${edificioId}`)
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area.id;
+                option.textContent = area.nombre;
+                selectArea.appendChild(option);
+            });
+        });
+}
+
+function cargarEquipos(select) {
+    fetch('/api/equipos')
+        .then(res => res.json())
+        .then(data => {
+            select.innerHTML = '<option value="">Selecciona un equipo</option>';
+            data.forEach(equipo => {
+                const option = document.createElement('option');
+                option.value = equipo.id;
+                option.textContent = equipo.nombre;
+                select.appendChild(option);
+            });
+        });
+}
+
+function addEquipment() {
+    const container = document.getElementById('equipmentList');
+    const div = document.createElement('div');
+    div.className = 'equipment-entry';
+    div.innerHTML = `
+        <select class="equipo">
+            <option value="">Cargando equipos...</option>
+        </select>
+        <input type="number" class="cantidad" placeholder="Cantidad" min="1" />
+        <span class="remove-btn" onclick="this.parentElement.remove()">×</span>
+    `;
+    container.appendChild(div);
+
+    const select = div.querySelector('.equipo');
+    cargarEquipos(select);
+}
+
+function enviarFormulario() {
+    const profesor_id = document.getElementById('profesor_id').value;
+    const tipo_area = document.getElementById('tipo-area').value;
+    const edificio = document.getElementById('edificio').value;
+    const area_id = document.getElementById('area').value;
+    const usuario_id = localStorage.getItem('usuario_id');
+    const admin_id = localStorage.getItem('admin_id');
+
+    if (!usuario_id || !admin_id) {
+        alert("⚠️ No se encontró información de usuario o administrador. Inicia sesión nuevamente.");
+        return;
     }
 
-    function enviarFormulario() {
-        const nombre = document.getElementById('nombre').value.trim();
-        const matricula = document.getElementById('matricula').value.trim();
-        const tipo_area = document.getElementById('tipo-area').value;
-        const edificio = document.getElementById('edificio').value;
-        const area = document.getElementById('area').value.trim();
+    if (!profesor_id || !tipo_area || !edificio || !area_id) {
+        alert("⚠️ Todos los campos del formulario deben estar completos.");
+        return;
+    }
 
-        const usuario_id = localStorage.getItem('usuario_id'); // ✅ Se obtiene del localStorage
+    const equipos = document.querySelectorAll('.equipment-entry');
+    if (equipos.length === 0) {
+        alert("⚠️ Debes agregar al menos un equipo.");
+        return;
+    }
 
-        if (!usuario_id) {
-            alert("⚠️ No se ha encontrado información del usuario. Por favor inicia sesión nuevamente.");
-            return;
-        }
+    let datosValidos = false;
+    equipos.forEach(entry => {
+        const equipo_id = entry.querySelector('.equipo').value;
+        const cantidad = entry.querySelector('.cantidad').value;
+        if (equipo_id && cantidad > 0) datosValidos = true;
+    });
 
-        const equipos = document.querySelectorAll('.equipment-entry');
-        if (!nombre || !matricula || !tipo_area || !edificio || !area) {
-            alert("Todos los campos deben estar completos.");
-            return;
-        }
+    if (!datosValidos) {
+        alert("⚠️ Todos los equipos deben tener una cantidad válida (> 0).");
+        return;
+    }
 
-        if (equipos.length === 0) {
-            alert("Debes añadir al menos un equipo.");
-            return;
-        }
+    equipos.forEach(entry => {
+        const equipo_id = entry.querySelector('.equipo').value;
+        const cantidad = entry.querySelector('.cantidad').value;
 
-        let equipoValido = false;
-        equipos.forEach(entry => {
-            const eq = entry.querySelector('.equipo').value.trim();
-            const cant = entry.querySelector('.cantidad').value;
-            if (eq && cant > 0) equipoValido = true;
-        });
+        if (equipo_id && cantidad > 0) {
+            const formData = new FormData();
+            formData.append('usuario_id', usuario_id);
+            formData.append('admin_id', admin_id);
+            formData.append('profesor_id', profesor_id);
+            formData.append('tipo_area', tipo_area);
+            formData.append('edificio', edificio);
+            formData.append('area_id', area_id);
+            formData.append('equipo_id', equipo_id);
+            formData.append('cantidad', cantidad);
 
-        if (!equipoValido) {
-            alert("Todos los equipos deben tener nombre y cantidad válida (> 0).");
-            return;
-        }
-
-        // Enviar datos al servidor (por cada equipo)
-        equipos.forEach(entry => {
-            const equipo = entry.querySelector('.equipo').value.trim();
-            const cantidad = entry.querySelector('.cantidad').value;
-
-            if (equipo && cantidad > 0) {
-                const formData = new FormData();
-                formData.append('usuario_id', usuario_id);
-                formData.append('nombre', nombre);
-                formData.append('matricula', matricula);
-                formData.append('tipo_area', tipo_area);
-                formData.append('area', area);
-                formData.append('edificio', edificio);
-                formData.append('equipo', equipo);
-                formData.append('cantidad', cantidad);
-
-                // --- MODIFICACIÓN IMPORTANTE: Obtener y enviar admin_id ---
-                const admin_id = localStorage.getItem('admin_id'); // ✅ Obtener admin_id del localStorage
-                if (!admin_id) {
-                    alert("⚠️ No se ha encontrado información del administrador. Por favor, asegúrate de haber iniciado sesión como administrador.");
-                    return; // Detener el proceso si no hay admin_id
-                }
-                formData.append('admin_id', admin_id); // ✅ Añadir admin_id
-                // --- FIN DE LA MODIFICACIÓN ---
-
-                fetch('/registrar_prestamo', {
-                    method: 'POST',
-                    body: formData
-                })
+            fetch('/registrar_prestamo', {
+                method: 'POST',
+                body: formData
+            })
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        alert("✅ Préstamo registrado correctamente");
-                        location.reload(); // recarga la página
+                        alert("✅ Préstamo registrado correctamente.");
+                        location.reload();
                     } else {
                         alert("❌ Error: " + data.message);
                     }
                 })
-                .catch(error => {
-                    console.error("Error al enviar préstamo:", error);
-                    alert("⚠️ Error al enviar el formulario.");
+                .catch(err => {
+                    console.error("Error al registrar el préstamo:", err);
+                    alert("❌ Error en la solicitud.");
                 });
+        }
+    });
+}
+
+// Autocompletar nombre del profesor desde matrícula
+document.getElementById('matricula').addEventListener('blur', () => {
+    const matricula = document.getElementById('matricula').value.trim();
+    if (!matricula) return;
+
+    fetch(`/api/profesor_por_matricula?matricula=${encodeURIComponent(matricula)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('nombre-profesor').value = data.profesor.nombre;
+                document.getElementById('profesor_id').value = data.profesor.id;
+            } else {
+                alert("❌ Matrícula inválida o profesor no registrado.");
+                document.getElementById('nombre-profesor').value = "";
+                document.getElementById('profesor_id').value = "";
             }
         });
-    }
+});
 </script>
 
 
