@@ -2,423 +2,430 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>Realiza tu préstamo</title>
-    <style>
-        /* Tu CSS original, sin cambios */
-        * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Realiza tu préstamo</title>
+  <style>
+    /* === ESTILO GENERAL === */
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #c9d6ff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #c9d6ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-        .main-container {
-            width: 95%;
-            max-width: 1100px;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
+    .main-container {
+      width: 95%;
+      max-width: 1100px;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: bold;
-        }
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: bold;
+    }
 
-        .content {
-            display: flex;
-            gap: 30px;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
+    .content {
+      display: flex;
+      gap: 30px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
 
-        .form-box,
-        .equipment-box {
-            flex: 1;
-            min-width: 280px;
-            padding: 20px;
-            border: 2px solid #ccc;
-            border-radius: 12px;
-        }
+    .form-box,
+    .equipment-box {
+      flex: 1;
+      min-width: 280px;
+      padding: 20px;
+      border: 2px solid #ccc;
+      border-radius: 12px;
+    }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+    .form-group {
+      margin-bottom: 15px;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-        }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
 
-        input[type="text"],
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
 
-        .add-equipment {
-            margin-bottom: 15px;
-            cursor: pointer;
-            color: #0072ff;
-            font-weight: bold;
-            text-decoration: underline;
-            user-select: none;
-        }
+    .add-equipment {
+      margin-bottom: 15px;
+      cursor: pointer;
+      color: #0072ff;
+      font-weight: bold;
+      text-decoration: underline;
+      user-select: none;
+    }
 
-        .equipment-entry {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: center;
-        }
+    .equipment-entry {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
 
-        .equipment-entry select,
-        .equipment-entry input {
-            flex: 1;
-        }
+    .equipment-entry select,
+    .equipment-entry input {
+      flex: 1;
+    }
 
-        .remove-btn {
-            color: red;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            user-select: none;
-        }
+    .remove-btn {
+      color: red;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      user-select: none;
+    }
 
-        .footer-buttons {
-            margin-top: 30px;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            gap: 190px;
-            flex-wrap: wrap;
-        }
+    .footer-buttons {
+      margin-top: 30px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      gap: 190px;
+      flex-wrap: wrap;
+    }
 
-        .footer-buttons button {
-            padding: 12px 25px;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            min-width: 120px;
-        }
+    .footer-buttons button {
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      min-width: 120px;
+    }
 
-        .btn-devueltos {
-            background-color: #ffdd00;
-            color: #2d2d2d;
-        }
+    .btn-devueltos,
+    .btn-pendientes {
+      background-color: #ffdd00;
+      color: #2d2d2d;
+    }
 
-        .btn-devueltos:hover {
-            background-color: #f5cf00;
-            box-shadow: 0 0 10px #ffdd00;
-        }
+    .btn-devueltos:hover,
+    .btn-pendientes:hover {
+      background-color: #f5cf00;
+      box-shadow: 0 0 10px #ffdd00;
+    }
 
-        .btn-prestar {
-            background-color: #0072ff;
-            color: #ffffff;
-        }
+    .btn-prestar {
+      background-color: #0072ff;
+      color: #ffffff;
+    }
 
-        .btn-prestar:hover {
-            background-color: #005ce6;
-            box-shadow: 0 0 12px #0072ff;
-        }
+    .btn-prestar:hover {
+      background-color: #005ce6;
+      box-shadow: 0 0 12px #0072ff;
+    }
 
-        .btn-pendientes {
-            background-color: #ffdd00;
-            color: #2d2d2d;
-        }
+    .footer-buttons button:hover {
+      transform: translateY(-2px);
+    }
 
-        .btn-pendientes:hover {
-            background-color: #f5cf00;
-            box-shadow: 0 0 10px #ffdd00;
-        }
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #ffe599;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 22px;
+      line-height: 40px;
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      color: #000;
+      user-select: none;
+    }
 
-        .footer-buttons button:hover {
-            transform: translateY(-2px);
-        }
+    #equipmentList {
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
 
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: #ffe599;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 22px;
-            line-height: 40px;
-            text-align: center;
-            cursor: pointer;
-            text-decoration: none;
-            color: #000;
-            user-select: none;
-        }
+    /* === NOTIFICACIONES (TOAST) === */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #323232;
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 1000;
+      font-size: 15px;
+    }
 
-        #equipmentList {
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 8px;
-        }
-    </style>
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success { background-color: #28a745; }
+    .toast.error { background-color: #dc3545; }
+    .toast.warning { background-color: #ffc107; color: #000; }
+  </style>
 </head>
 
 <body>
-    
+  <a href="#" class="back-btn" title="Volver">&larr;</a>
 
-    <input type="hidden" id="profesor_id" />
-
-
-    <a href="#" class="back-btn" title="Volver">←</a>
-
-    <div class="main-container">
-        <h2>Realiza tu préstamo</h2>
-
-        <div class="content">
-
-            <!-- Formulario -->
-            <div class="form-box">
-                <div class="form-group">
-    <label for="matricula">Matrícula del profesor:</label>
-    <input type="text" id="matricula" placeholder="Ej. A12345" />
-</div>
-
-<div class="form-group">
-    <label for="nombre-profesor">Nombre del profesor:</label>
-    <input type="text" id="nombre-profesor" readonly placeholder="Se mostrará automáticamente" />
-</div>
-
-                <div class="form-group">
-                    <label for="tipo-area">Tipo Área:</label>
-                    <select id="tipo-area"></select>
-                </div>
-                <div class="form-group">
-                    <label for="edificio">Edificio:</label>
-                    <select id="edificio"></select>
-                </div>
-                <div class="form-group">
-                    <label for="area">Área:</label>
-                    <select id="area"></select>
-                </div>
-            </div>
-
-            <!-- Equipos -->
-            <div class="equipment-box">
-                <div class="add-equipment" onclick="addEquipment()">+ Añadir equipo</div>
-                <div id="equipmentList"></div>
-            </div>
-
+  <div class="main-container">
+    <h2>Realiza tu préstamo</h2>
+    <div class="content">
+      <div class="form-box">
+        <div class="form-group">
+          <label for="matricula">Matrícula del profesor:</label>
+          <input type="text" id="matricula" placeholder="Ej. A12345" />
         </div>
 
-        <div class="footer-buttons">
-            <button class="btn-devueltos" onclick="window.location.href='/User/devueltos'">Devueltos</button>
-            <button class="btn-prestar" onclick="enviarFormulario()">Prestar</button>
-            <button class="btn-pendientes" onclick="window.location.href='/pendientes'">Pendientes</button>
+        <div class="form-group">
+          <label for="nombre-profesor">Nombre del profesor:</label>
+          <input type="text" id="nombre-profesor" readonly placeholder="Se mostrará automáticamente" />
         </div>
+
+        <div class="form-group">
+          <label for="tipo-area">Tipo Área:</label>
+          <select id="tipo-area"></select>
+        </div>
+
+        <div class="form-group">
+          <label for="edificio">Edificio:</label>
+          <select id="edificio"></select>
+        </div>
+
+        <div class="form-group">
+          <label for="area">Área:</label>
+          <select id="area"></select>
+        </div>
+      </div>
+
+      <div class="equipment-box">
+        <div class="add-equipment" onclick="addEquipment()">+ Añadir equipo</div>
+        <div id="equipmentList"></div>
+      </div>
     </div>
 
-    <script>
-document.addEventListener('DOMContentLoaded', () => {
-    cargarTiposArea();
-    cargarEdificios();
-    document.getElementById('tipo-area').addEventListener('change', cargarAreas);
-    document.getElementById('edificio').addEventListener('change', cargarAreas);
-});
+    <div class="footer-buttons">
+      <button class="btn-devueltos" onclick="window.location.href='/User/devueltos'">Devueltos</button>
+      <button class="btn-prestar" onclick="enviarFormulario()">Prestar</button>
+      <button class="btn-pendientes" onclick="window.location.href='/pendientes'">Pendientes</button>
+    </div>
+  </div>
 
-function cargarTiposArea() {
-    fetch('/api/tipos_area')
+  <!-- Contenedor de notificación tipo toast -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // Mostrar notificación visual
+    function mostrarNotificacion(mensaje, tipo = 'success') {
+      const toast = document.getElementById('toast');
+      toast.className = `toast ${tipo}`;
+      toast.textContent = mensaje;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ==== LÓGICA PRINCIPAL ====
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarTiposArea();
+      cargarEdificios();
+      document.getElementById('tipo-area').addEventListener('change', cargarAreas);
+      document.getElementById('edificio').addEventListener('change', cargarAreas);
+    });
+
+    function cargarTiposArea() {
+      fetch('/api/tipos_area')
         .then(res => res.json())
         .then(data => {
-            const select = document.getElementById('tipo-area');
-            select.innerHTML = '<option value="">Selecciona un tipo</option>';
-            data.forEach(tipo => {
-                const option = document.createElement('option');
-                option.value = tipo;
-                option.textContent = tipo.charAt(0).toUpperCase() + tipo.slice(1);
-                select.appendChild(option);
-            });
+          const select = document.getElementById('tipo-area');
+          select.innerHTML = '<option value="">Selecciona un tipo</option>';
+          data.forEach(tipo => {
+            const option = document.createElement('option');
+            option.value = tipo;
+            option.textContent = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+            select.appendChild(option);
+          });
         });
-}
+    }
 
-function cargarEdificios() {
-    fetch('/api/edificios')
+    function cargarEdificios() {
+      fetch('/api/edificios')
         .then(res => res.json())
         .then(data => {
-            const select = document.getElementById('edificio');
-            select.innerHTML = '<option value="">Selecciona un edificio</option>';
-            data.forEach(edif => {
-                const option = document.createElement('option');
-                option.value = edif.id;
-                option.textContent = 'Edificio ' + edif.nombre;
-                select.appendChild(option);
-            });
+          const select = document.getElementById('edificio');
+          select.innerHTML = '<option value="">Selecciona un edificio</option>';
+          data.forEach(edif => {
+            const option = document.createElement('option');
+            option.value = edif.id;
+            option.textContent = 'Edificio ' + edif.nombre;
+            select.appendChild(option);
+          });
         });
-}
+    }
 
-function cargarAreas() {
-    const tipo = document.getElementById('tipo-area').value;
-    const edificioId = document.getElementById('edificio').value;
-    const selectArea = document.getElementById('area');
-    selectArea.innerHTML = '<option value="">Selecciona un área</option>';
-
-    if (!tipo || !edificioId) return;
-
-    fetch(`/api/areas?tipo=${encodeURIComponent(tipo)}&edificio_id=${edificioId}`)
+    function cargarAreas() {
+      const tipo = document.getElementById('tipo-area').value;
+      const edificioId = document.getElementById('edificio').value;
+      const selectArea = document.getElementById('area');
+      selectArea.innerHTML = '<option value="">Selecciona un área</option>';
+      if (!tipo || !edificioId) return;
+      fetch(`/api/areas?tipo=${encodeURIComponent(tipo)}&edificio_id=${edificioId}`)
         .then(res => res.json())
         .then(data => {
-            data.forEach(area => {
-                const option = document.createElement('option');
-                option.value = area.id;
-                option.textContent = area.nombre;
-                selectArea.appendChild(option);
-            });
+          data.forEach(area => {
+            const option = document.createElement('option');
+            option.value = area.id;
+            option.textContent = area.nombre;
+            selectArea.appendChild(option);
+          });
         });
-}
+    }
 
-function cargarEquipos(select) {
-    fetch('/api/equipos')
+    function cargarEquipos(select) {
+      fetch('/api/equipos')
         .then(res => res.json())
         .then(data => {
-            select.innerHTML = '<option value="">Selecciona un equipo</option>';
-            data.forEach(equipo => {
-                const option = document.createElement('option');
-                option.value = equipo.id;
-                option.textContent = equipo.nombre;
-                select.appendChild(option);
-            });
+          select.innerHTML = '<option value="">Selecciona un equipo</option>';
+          data.forEach(equipo => {
+            const option = document.createElement('option');
+            option.value = equipo.id;
+            option.textContent = equipo.nombre;
+            select.appendChild(option);
+          });
         });
-}
+    }
 
-function addEquipment() {
-    const container = document.getElementById('equipmentList');
-    const div = document.createElement('div');
-    div.className = 'equipment-entry';
-    div.innerHTML = `
+    function addEquipment() {
+      const container = document.getElementById('equipmentList');
+      const div = document.createElement('div');
+      div.className = 'equipment-entry';
+      div.innerHTML = `
         <select class="equipo">
-            <option value="">Cargando equipos...</option>
+          <option value="">Cargando equipos...</option>
         </select>
         <input type="number" class="cantidad" placeholder="Cantidad" min="1" />
         <span class="remove-btn" onclick="this.parentElement.remove()">×</span>
-    `;
-    container.appendChild(div);
-
-    const select = div.querySelector('.equipo');
-    cargarEquipos(select);
-}
-
-function enviarFormulario() {
-    const profesor_id = document.getElementById('profesor_id').value;
-    const tipo_area = document.getElementById('tipo-area').value;
-    const edificio = document.getElementById('edificio').value;
-    const area_id = document.getElementById('area').value;
-    const usuario_id = localStorage.getItem('usuario_id');
-    const admin_id = localStorage.getItem('admin_id');
-
-    if (!usuario_id || !admin_id) {
-        alert("⚠️ No se encontró información de usuario o administrador. Inicia sesión nuevamente.");
-        return;
+      `;
+      container.appendChild(div);
+      cargarEquipos(div.querySelector('.equipo'));
     }
 
-    if (!profesor_id || !tipo_area || !edificio || !area_id) {
-        alert("⚠️ Todos los campos del formulario deben estar completos.");
-        return;
-    }
+    function enviarFormulario() {
+      const profesor_id = document.getElementById('profesor_id')?.value;
+      const tipo_area = document.getElementById('tipo-area').value;
+      const edificio = document.getElementById('edificio').value;
+      const area_id = document.getElementById('area').value;
+      const usuario_id = localStorage.getItem('usuario_id');
+      const admin_id = localStorage.getItem('admin_id');
 
-    const equipos = document.querySelectorAll('.equipment-entry');
-    if (equipos.length === 0) {
-        alert("⚠️ Debes agregar al menos un equipo.");
-        return;
-    }
+      if (!usuario_id || !admin_id) return mostrarNotificacion("No hay sesión iniciada.", 'warning');
+      if (!profesor_id || !tipo_area || !edificio || !area_id) return mostrarNotificacion("Completa todos los campos.", 'warning');
 
-    let datosValidos = false;
-    equipos.forEach(entry => {
-        const equipo_id = entry.querySelector('.equipo').value;
-        const cantidad = entry.querySelector('.cantidad').value;
-        if (equipo_id && cantidad > 0) datosValidos = true;
-    });
+      const equipos = document.querySelectorAll('.equipment-entry');
+      if (!equipos.length) return mostrarNotificacion("Agrega al menos un equipo.", 'warning');
 
-    if (!datosValidos) {
-        alert("⚠️ Todos los equipos deben tener una cantidad válida (> 0).");
-        return;
-    }
+      let datosValidos = false;
+      equipos.forEach(entry => {
+        const id = entry.querySelector('.equipo').value;
+        const cant = entry.querySelector('.cantidad').value;
+        if (id && cant > 0) datosValidos = true;
+      });
+      if (!datosValidos) return mostrarNotificacion("Verifica cantidades válidas.", 'warning');
 
-    equipos.forEach(entry => {
-        const equipo_id = entry.querySelector('.equipo').value;
-        const cantidad = entry.querySelector('.cantidad').value;
+      equipos.forEach(entry => {
+        const id = entry.querySelector('.equipo').value;
+        const cant = entry.querySelector('.cantidad').value;
+        if (id && cant > 0) {
+          const formData = new FormData();
+          formData.append('usuario_id', usuario_id);
+          formData.append('admin_id', admin_id);
+          formData.append('profesor_id', profesor_id);
+          formData.append('tipo_area', tipo_area);
+          formData.append('edificio', edificio);
+          formData.append('area_id', area_id);
+          formData.append('equipo_id', id);
+          formData.append('cantidad', cant);
 
-        if (equipo_id && cantidad > 0) {
-            const formData = new FormData();
-            formData.append('usuario_id', usuario_id);
-            formData.append('admin_id', admin_id);
-            formData.append('profesor_id', profesor_id);
-            formData.append('tipo_area', tipo_area);
-            formData.append('edificio', edificio);
-            formData.append('area_id', area_id);
-            formData.append('equipo_id', equipo_id);
-            formData.append('cantidad', cantidad);
-
-            fetch('/registrar_prestamo', {
-                method: 'POST',
-                body: formData
+          fetch('/registrar_prestamo', {
+            method: 'POST',
+            body: formData
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                mostrarNotificacion("Préstamo registrado 🎉", 'success');
+                setTimeout(() => location.reload(), 2000);
+              } else {
+                mostrarNotificacion("Error: " + data.message, 'error');
+              }
             })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("✅ Préstamo registrado correctamente.");
-                        location.reload();
-                    } else {
-                        alert("❌ Error: " + data.message);
-                    }
-                })
-                .catch(err => {
-                    console.error("Error al registrar el préstamo:", err);
-                    alert("❌ Error en la solicitud.");
-                });
+            .catch(() => mostrarNotificacion("Error al registrar.", 'error'));
         }
-    });
-}
+      });
+    }
 
-// Autocompletar nombre del profesor desde matrícula
-document.getElementById('matricula').addEventListener('blur', () => {
-    const matricula = document.getElementById('matricula').value.trim();
-    if (!matricula) return;
+    // Autocompletar profesor desde matrícula
+    document.getElementById('matricula').addEventListener('blur', () => {
+      const matricula = document.getElementById('matricula').value.trim();
+      if (!matricula) return;
 
-    fetch(`/api/profesor_por_matricula?matricula=${encodeURIComponent(matricula)}`)
+      fetch(`/api/profesor_por_matricula?matricula=${encodeURIComponent(matricula)}`)
         .then(res => res.json())
         .then(data => {
-            if (data.success) {
-                document.getElementById('nombre-profesor').value = data.profesor.nombre;
-                document.getElementById('profesor_id').value = data.profesor.id;
-            } else {
-                alert("❌ Matrícula inválida o profesor no registrado.");
-                document.getElementById('nombre-profesor').value = "";
-                document.getElementById('profesor_id').value = "";
+          if (data.success) {
+            document.getElementById('nombre-profesor').value = data.profesor.nombre;
+            if (!document.getElementById('profesor_id')) {
+              const input = document.createElement('input');
+              input.type = 'hidden';
+              input.id = 'profesor_id';
+              document.body.appendChild(input);
             }
+            document.getElementById('profesor_id').value = data.profesor.id;
+          } else {
+            mostrarNotificacion("Matrícula inválida.", 'error');
+            document.getElementById('nombre-profesor').value = "";
+            document.getElementById('profesor_id').value = "";
+          }
         });
-});
-</script>
-
-
+    });
+  </script>
 </body>
 
 </html>
+
