@@ -182,71 +182,79 @@
   </div>
 
   <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const sesionId = localStorage.getItem("sesion_id");  // Asegúrate de haber guardado esto tras el login
+document.addEventListener('DOMContentLoaded', () => {
+    cargarPrestamosPendientes();
+});
 
-  if (!sesionId) {
-    alert("No se encontró el ID de sesión. Vuelve a iniciar sesión.");
-    return;
-  }
+// Cargar los préstamos pendientes
+function cargarPrestamosPendientes() {
+    const sesion_id = localStorage.getItem('sesion_id');
+    if (!sesion_id) {
+        alert('Sesión no encontrada. Inicia sesión nuevamente.');
+        return;
+    }
 
-  fetch(`/api/prestamos_pendientes/${sesionId}`)
+    fetch(`/api/prestamos_pendientes/${sesion_id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                alert('Error al obtener préstamos pendientes');
+                return;
+            }
+
+            const prestamos = data.data;
+            const container = document.getElementById('cards-container');
+            container.innerHTML = ''; // Limpiar tarjetas previas
+
+            if (prestamos.length === 0) {
+                container.innerHTML = '<p>No hay préstamos pendientes por devolver.</p>';
+                return;
+            }
+
+            prestamos.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <p><strong>Profesor:</strong> ${p.nombre} (${p.matricula})</p>
+                    <p><strong>Equipo:</strong> ${p.equipo}</p>
+                    <p><strong>Cantidad:</strong> <span class="cantidad">${p.cantidad}</span></p>
+                    <p><strong>Hora préstamo:</strong> ${p.hora_prestamo}</p>
+                    <p><strong>Área:</strong> ${p.area} (${p.edificio})</p>
+                    <button class="btn-devolver" onclick="devolverPrestamo(${p.id})">Devolver</button>
+                `;
+                container.appendChild(card);
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar préstamos:', error);
+            alert('Error al cargar los préstamos pendientes');
+        });
+}
+
+// Devolver préstamo
+function devolverPrestamo(prestamoId) {
+    fetch(`/api/devolver_prestamo/${prestamoId}`, {
+        method: 'POST'
+    })
     .then(response => response.json())
     .then(data => {
-      if (!data.success) {
-        throw new Error(data.message);
-      }
-
-      const container = document.getElementById("cards-container");
-      container.innerHTML = "";
-
-      data.data.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <button class="btn-devolver" data-id="${item.id}">Devolver</button>
-          <p><strong>${item.nombre}</strong></p>
-          <p>${item.matricula}</p>
-          <p>${item.equipo}</p>
-          <p class="cantidad">Cantidad: ${item.cantidad}</p>
-        `;
-        container.appendChild(card);
-      });
-
-      // Agrega listeners a todos los botones de devolver
-      document.querySelectorAll(".btn-devolver").forEach(button => {
-        button.addEventListener("click", () => {
-          const prestamoId = button.getAttribute("data-id");
-
-          fetch(`/api/devolver_prestamo/${prestamoId}`, {
-            method: "POST"
-          })
-          .then(res => res.json())
-          .then(result => {
-            if (result.success) {
-              // Elimina la tarjeta visualmente
-              button.parentElement.remove();
-            } else {
-              alert("Error al marcar como devuelto: " + result.message);
-            }
-          })
-          .catch(err => {
-            console.error("Error en la solicitud de devolución:", err);
-          });
-        });
-      });
-
+        if (data.success) {
+            alert('Préstamo devuelto correctamente');
+            cargarPrestamosPendientes(); // Recargar la lista
+        } else {
+            alert('Error: ' + data.message);
+        }
     })
     .catch(error => {
-      console.error("Error cargando préstamos pendientes:", error);
+        console.error('Error al devolver préstamo:', error);
+        alert('Hubo un error al marcar como devuelto');
     });
-});
+}
 </script>
+
 
 </body>
 </html>
-
-
 
 
 
