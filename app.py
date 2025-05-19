@@ -62,6 +62,8 @@ def gestios_profesores():
     return render_template('Admin/GestiosProfesores.html')
 
 
+
+
 @app.route('/User/devueltos')
 def mostrar_devueltos():
     conexion = conectar_bd()
@@ -685,6 +687,10 @@ def eliminar_profesor(matricula):
     finally:
         cursor.close()
         conexion.close()
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
 if __name__ == '__main__':
