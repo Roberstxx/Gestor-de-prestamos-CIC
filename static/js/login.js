@@ -8,6 +8,23 @@ const sessionKeyField = document.getElementById('sessionKeyField');
 const signUpForm = document.getElementById('signUpForm');
 const signInForm = document.querySelector('.sign-in form');
 
+// -------------------- FUNCIÓN DE TOAST --------------------
+function mostrarToast(mensaje, tipo = 'success') {
+    let toast = document.getElementById('toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = mensaje;
+    toast.className = `toast show ${tipo}`;
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
 // -------------------- TRANSICIONES ENTRE FORMULARIOS --------------------
 registerBtn.addEventListener('click', () => {
     container.classList.add("active");
@@ -35,21 +52,23 @@ signUpForm.addEventListener('submit', function (event) {
     const adminKeyInput = document.getElementById('adminKey');
     const sessionKeyInput = document.getElementById('sessionKey');
 
+    // Validación de campos vacíos
     if (!nameInput.value || !emailInput.value || !passwordInput.value) {
-        alert("Por favor, completa todos los campos.");
+        mostrarToast("Por favor, completa todos los campos.", 'warning');
         return;
     }
 
     if (selectedUserType === 'admin' && (!adminKeyInput.value || adminKeyInput.value.trim() === '')) {
-        alert('Por favor, ingresa la llave de administrador.');
+        mostrarToast('Por favor, ingresa la llave de administrador.', 'warning');
         return;
     }
 
     if (selectedUserType === 'student' && (!sessionKeyInput.value || sessionKeyInput.value.trim() === '')) {
-        alert('Por favor, ingresa la clave de sesión proporcionada por tu profesor.');
+        mostrarToast('Por favor, ingresa la clave de sesión proporcionada por tu profesor.', 'warning');
         return;
     }
 
+    // Envío de datos
     const formData = new FormData();
     formData.append('name', nameInput.value);
     formData.append('email', emailInput.value);
@@ -65,16 +84,16 @@ signUpForm.addEventListener('submit', function (event) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('✅ Registro exitoso. Ahora puedes iniciar sesión.');
+            mostrarToast('✅ Registro exitoso. Ahora puedes iniciar sesión.', 'success');
             signUpForm.reset();
             container.classList.remove("active");
         } else {
-            alert('❌ Error en el registro: ' + data.message);
+            mostrarToast('❌ Error: ' + data.message, 'error');
         }
     })
     .catch(error => {
         console.error('Error en la petición de registro:', error);
-        alert('⚠️ Ocurrió un error al comunicarse con el servidor para el registro.');
+        mostrarToast('⚠️ Error de conexión con el servidor.', 'error');
     });
 });
 
@@ -85,8 +104,9 @@ signInForm.addEventListener('submit', function (event) {
     const userEmailInput = signInForm.querySelector('input[name="user"]');
     const passwordInput = signInForm.querySelector('input[name="password"]');
 
+    // Validación
     if (!userEmailInput.value || !passwordInput.value) {
-        alert("Por favor, ingresa tu usuario y contraseña.");
+        mostrarToast("Por favor, ingresa tu usuario y contraseña.", 'warning');
         return;
     }
 
@@ -94,33 +114,32 @@ signInForm.addEventListener('submit', function (event) {
     formData.append('user', userEmailInput.value);
     formData.append('password', passwordInput.value);
 
-    fetch('/login', {   // asegúrate de que app.py tenga también @app.route('/login')
+    fetch('/login', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // --- MEJORAS CLAVE AQUÍ ---
             localStorage.setItem('sesion_id', data.sesion_id);
-            localStorage.setItem('usuario_id', data.usuario_id); // Guardamos el ID del usuario (admin o estudiante)
-            localStorage.setItem('user_role', data.rol);         // Guardamos el rol
+            localStorage.setItem('usuario_id', data.usuario_id);
+            localStorage.setItem('user_role', data.rol);
 
             if (data.rol === 'admin') {
-                localStorage.setItem('admin_id', data.usuario_id); // ✅  GUARDAR admin_id (usuario_id)
-                // Opcional: localStorage.setItem('adminEmail', userEmailInput.value); // Guardar email del admin
-                window.location.href = '/PanelAdmin';
+                localStorage.setItem('admin_id', data.usuario_id);
+                mostrarToast("Inicio de sesión como administrador.", 'success');
+                setTimeout(() => window.location.href = '/PanelAdmin', 1500);
             } else if (data.rol === 'student') {
-                window.location.href = '/prestamos';
+                mostrarToast("Inicio de sesión como usuario.", 'success');
+                setTimeout(() => window.location.href = '/prestamos', 1500);
             }
-
-            alert("✅ Inicio de sesión exitoso.");
         } else {
-            alert('❌ Error al iniciar sesión: ' + data.message);
+            mostrarToast('❌ Error al iniciar sesión: ' + data.message, 'error');
         }
     })
     .catch(error => {
-        console.error('Error en la petición de inicio de sesión:', error);
-        alert('⚠️ Ocurrió un error al comunicarse con el servidor para iniciar sesión.');
+        console.error('Error en el login:', error);
+        mostrarToast('⚠️ Error al comunicarse con el servidor.', 'error');
     });
 });
+
