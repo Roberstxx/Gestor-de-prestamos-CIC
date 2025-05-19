@@ -1,108 +1,181 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestión de Profesores</title>
   <style>
     :root {
-      --primary: #0072ff;
-      --warning: #ffdd00;
-      --danger: #dc3545;
+      --primary: #0057B8;
+      --secondary: #FFD700;
+      --light: #f8f9fa;
+      --dark: #343a40;
       --success: #28a745;
-      --bg-light: #f0f0f0;
-      --white: #fff;
+      --danger: #dc3545;
+      --warning: #ffc107;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--bg-light);
-      padding: 2rem;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #c9d6ff;
+      color: var(--dark);
+      line-height: 1.6;
+      padding: 20px;
     }
 
     .container {
-      max-width: 1000px;
-      margin: auto;
-      background-color: var(--white);
-      padding: 2rem;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary), #003d7a);
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+      position: relative;
     }
 
     h1 {
-      text-align: center;
-      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      margin-bottom: 0;
     }
 
     .form-section {
-      margin-bottom: 2rem;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 1.5rem;
+      padding: 25px;
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
     }
 
     .form-group {
-      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
     }
 
     label {
-      font-weight: bold;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--primary);
     }
 
     input[type="text"],
     input[type="email"] {
       width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      padding: 12px;
+      border: 1px solid #ced4da;
+      border-radius: var(--border-radius);
       font-size: 14px;
+      transition: var(--transition);
     }
 
-    button {
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 87, 184, 0.25);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
       background-color: var(--primary);
       color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s ease;
     }
 
-    button:hover {
-      background-color: #005ad3;
+    .btn-primary:hover {
+      background-color: #004494;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary);
+      color: #000;
+    }
+
+    .btn-secondary:hover {
+      background-color: #e6c200;
+      transform: translateY(-2px);
     }
 
     .table-container {
+      padding: 20px;
       overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #ccc;
-    }
-
-    .action-btn {
-      margin-right: 8px;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
       font-size: 14px;
-      cursor: pointer;
     }
 
-    .edit-btn {
+    th {
+      background-color: var(--primary);
+      color: white;
+      padding: 12px 15px;
+      text-align: left;
+      position: sticky;
+      top: 0;
+    }
+
+    td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    tr:hover {
+      background-color: #e9ecef;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .btn-warning {
       background-color: var(--warning);
+      color: #000;
     }
 
-    .delete-btn {
+    .btn-danger {
       background-color: var(--danger);
       color: white;
     }
@@ -113,41 +186,110 @@
       right: 20px;
       background-color: #333;
       color: white;
-      padding: 12px 18px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      padding: 12px 24px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
       opacity: 0;
       transform: translateY(20px);
-      transition: opacity 0.3s, transform 0.3s;
+      transition: var(--transition);
       z-index: 9999;
+      max-width: 400px;
     }
 
     .toast.show {
       opacity: 1;
       transform: translateY(0);
     }
+
+    .toast-success {
+      background-color: var(--success);
+    }
+
+    .toast-error {
+      background-color: var(--danger);
+    }
+
+    .volver-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: var(--secondary);
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      font-weight: bold;
+      border-radius: var(--border-radius);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+
+    .volver-button:hover {
+      background-color: #e6c200;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-btns {
+        flex-direction: column;
+      }
+      
+      .btn-sm {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>Gestión de Profesores</h1>
+    <div class="header">
+      <button onclick="window.history.back()" class="volver-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>
+        Volver
+      </button>
+      <h1>Gestión de Profesores</h1>
+    </div>
 
     <!-- Formulario para agregar o editar profesor -->
     <div class="form-section">
-      <div class="form-group">
-        <label for="matricula">Matrícula:</label>
-        <input type="text" id="matricula" placeholder="Ej. A12345">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="matricula">Matrícula:</label>
+          <input type="text" id="matricula" placeholder="Ej. A12345" required>
+        </div>
+        <div class="form-group">
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" placeholder="Nombre completo del profesor" required>
+        </div>
+        <div class="form-group">
+          <label for="correo">Correo electrónico:</label>
+          <input type="email" id="correo" placeholder="correo@uacam.mx">
+        </div>
       </div>
-      <div class="form-group">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" placeholder="Nombre del profesor">
+      <div style="display: flex; gap: 10px;">
+        <button onclick="guardarProfesor()" id="btnGuardar" class="btn btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+          </svg>
+          <span id="btnText">Agregar Profesor</span>
+        </button>
+        <button onclick="limpiarFormulario()" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z"/>
+          </svg>
+          Limpiar
+        </button>
       </div>
-      <div class="form-group">
-        <label for="correo">Correo electrónico:</label>
-        <input type="email" id="correo" placeholder="correo@ejemplo.com">
-      </div>
-      <button onclick="guardarProfesor()" id="btnGuardar">Agregar Profesor</button>
     </div>
 
     <!-- Tabla de profesores -->
@@ -161,7 +303,9 @@
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody id="tablaProfesores"></tbody>
+        <tbody id="tablaProfesores">
+          <!-- Los datos se cargarán dinámicamente -->
+        </tbody>
       </table>
     </div>
   </div>
@@ -169,112 +313,154 @@
   <div id="toast" class="toast"></div>
 
   <script>
-let profesores = [];
-let editando = null;
+    let profesores = [];
+    let editando = null;
 
-function mostrarToast(mensaje) {
-  const toast = document.getElementById('toast');
-  toast.textContent = mensaje;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-function renderTabla() {
-  const tbody = document.getElementById('tablaProfesores');
-  tbody.innerHTML = '';
-  profesores.forEach((prof) => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${prof.matricula}</td>
-        <td>${prof.nombre}</td>
-        <td>${prof.correo}</td>
-        <td>
-          <button class="action-btn edit-btn" onclick="editar('${prof.matricula}')">Editar</button>
-          <button class="action-btn delete-btn" onclick="eliminar('${prof.matricula}')">Eliminar</button>
-        </td>
-      </tr>`;
-  });
-}
-
-function guardarProfesor() {
-  const matricula = document.getElementById('matricula').value.trim();
-  const nombre = document.getElementById('nombre').value.trim();
-  const correo = document.getElementById('correo').value.trim();
-
-  if (!matricula || !nombre || !correo) {
-    mostrarToast('Completa todos los campos');
-    return;
-  }
-
-  const payload = { matricula, nombre, correo };
-
-  const url = editando ? `/api/profesores/${editando}` : '/api/profesores';
-  const method = editando ? 'PUT' : 'POST';
-
-  fetch(url, {
-    method: method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      mostrarToast(editando ? 'Profesor actualizado' : 'Profesor agregado');
-      editando = null;
-      document.getElementById('btnGuardar').textContent = 'Agregar Profesor';
-      limpiarFormulario();
-      cargarProfesores();
-    } else {
-      mostrarToast(data.error || 'Error al guardar');
+    function mostrarToast(mensaje, tipo = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = mensaje;
+      toast.className = 'toast';
+      toast.classList.add('show', `toast-${tipo}`);
+      setTimeout(() => toast.classList.remove('show'), 3000);
     }
-  });
-}
 
-function editar(matricula) {
-  const profesor = profesores.find(p => p.matricula === matricula);
-  if (profesor) {
-    document.getElementById('matricula').value = profesor.matricula;
-    document.getElementById('nombre').value = profesor.nombre;
-    document.getElementById('correo').value = profesor.correo;
-    editando = profesor.matricula;
-    document.getElementById('btnGuardar').textContent = 'Actualizar Profesor';
-  }
-}
-
-function eliminar(matricula) {
-  if (confirm('¿Eliminar este profesor?')) {
-    fetch(`/api/profesores/${matricula}`, { method: 'DELETE' })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        mostrarToast('Profesor eliminado');
-        cargarProfesores();
-      } else {
-        mostrarToast(data.error || 'Error al eliminar');
+    function renderTabla() {
+      const tbody = document.getElementById('tablaProfesores');
+      tbody.innerHTML = '';
+      
+      if (profesores.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 30px; color: #6c757d; font-style: italic;">
+              No hay profesores registrados
+            </td>
+          </tr>`;
+        return;
       }
+      
+      profesores.forEach((prof) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${prof.matricula}</td>
+            <td>${prof.nombre}</td>
+            <td>${prof.correo || 'N/A'}</td>
+            <td>
+              <div class="action-btns">
+                <button class="btn btn-sm btn-warning" onclick="editar('${prof.matricula}')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                  </svg>
+                  Editar
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="eliminar('${prof.matricula}')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                  </svg>
+                  Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>`;
+      });
+    }
+
+    function guardarProfesor() {
+      const matricula = document.getElementById('matricula').value.trim();
+      const nombre = document.getElementById('nombre').value.trim();
+      const correo = document.getElementById('correo').value.trim();
+
+      if (!matricula || !nombre) {
+        mostrarToast('Matrícula y nombre son campos obligatorios', 'error');
+        return;
+      }
+
+      const payload = { matricula, nombre, correo };
+
+      const url = editando ? `/api/profesores/${editando}` : '/api/profesores';
+      const method = editando ? 'PUT' : 'POST';
+
+      fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error(res.statusText);
+        return res.json();
+      })
+      .then(data => {
+        mostrarToast(editando ? 'Profesor actualizado correctamente' : 'Profesor agregado correctamente');
+        editando = null;
+        document.getElementById('btnText').textContent = 'Agregar Profesor';
+        limpiarFormulario();
+        cargarProfesores();
+      })
+      .catch(err => {
+        mostrarToast(err.message || 'Error al procesar la solicitud', 'error');
+      });
+    }
+
+    function editar(matricula) {
+      const profesor = profesores.find(p => p.matricula === matricula);
+      if (profesor) {
+        document.getElementById('matricula').value = profesor.matricula;
+        document.getElementById('nombre').value = profesor.nombre;
+        document.getElementById('correo').value = profesor.correo || '';
+        editando = profesor.matricula;
+        document.getElementById('btnText').textContent = 'Actualizar Profesor';
+        document.getElementById('matricula').focus();
+      }
+    }
+
+    function eliminar(matricula) {
+      if (confirm('¿Estás seguro de eliminar este profesor?')) {
+        fetch(`/api/profesores/${matricula}`, { method: 'DELETE' })
+        .then(res => {
+          if (!res.ok) throw new Error(res.statusText);
+          return res.json();
+        })
+        .then(data => {
+          mostrarToast('Profesor eliminado correctamente');
+          cargarProfesores();
+        })
+        .catch(err => {
+          mostrarToast(err.message || 'Error al eliminar el profesor', 'error');
+        });
+      }
+    }
+
+    function limpiarFormulario() {
+      document.getElementById('matricula').value = '';
+      document.getElementById('nombre').value = '';
+      document.getElementById('correo').value = '';
+      editando = null;
+      document.getElementById('btnText').textContent = 'Agregar Profesor';
+      document.getElementById('matricula').focus();
+    }
+
+    function cargarProfesores() {
+      fetch('/api/profesores')
+        .then(res => {
+          if (!res.ok) throw new Error(res.statusText);
+          return res.json();
+        })
+        .then(data => {
+          profesores = data;
+          renderTabla();
+        })
+        .catch(err => {
+          mostrarToast('Error al cargar los profesores', 'error');
+          profesores = [];
+          renderTabla();
+        });
+    }
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarProfesores();
+      document.getElementById('matricula').focus();
     });
-  }
-}
-
-function limpiarFormulario() {
-  document.getElementById('matricula').value = '';
-  document.getElementById('nombre').value = '';
-  document.getElementById('correo').value = '';
-}
-
-function cargarProfesores() {
-  fetch('/api/profesores')
-    .then(res => res.json())
-    .then(data => {
-      profesores = data;
-      renderTabla();
-    });
-}
-
-window.addEventListener('DOMContentLoaded', cargarProfesores);
-</script>
-
+  </script>
 </body>
-
 </html>
-
