@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Profesores</title>
+  <style>
+    :root {
+      --primary: #0072ff;
+      --warning: #ffdd00;
+      --danger: #dc3545;
+      --success: #28a745;
+      --bg-light: #f0f0f0;
+      --white: #fff;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-light);
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background-color: var(--white);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #005ad3;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .action-btn {
+      margin-right: 8px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .edit-btn {
+      background-color: var(--warning);
+    }
+
+    .delete-btn {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #333;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 9999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Gestión de Profesores</h1>
+
+    <!-- Formulario para agregar o editar profesor -->
+    <div class="form-section">
+      <div class="form-group">
+        <label for="matricula">Matrícula:</label>
+        <input type="text" id="matricula" placeholder="Ej. A12345">
+      </div>
+      <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" placeholder="Nombre del profesor">
+      </div>
+      <div class="form-group">
+        <label for="correo">Correo electrónico:</label>
+        <input type="email" id="correo" placeholder="correo@ejemplo.com">
+      </div>
+      <button onclick="guardarProfesor()" id="btnGuardar">Agregar Profesor</button>
+    </div>
+
+    <!-- Tabla de profesores -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Matrícula</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablaProfesores"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+let profesores = [];
+let editando = null;
+
+function mostrarToast(mensaje) {
+  const toast = document.getElementById('toast');
+  toast.textContent = mensaje;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function renderTabla() {
+  const tbody = document.getElementById('tablaProfesores');
+  tbody.innerHTML = '';
+  profesores.forEach((prof) => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${prof.matricula}</td>
+        <td>${prof.nombre}</td>
+        <td>${prof.correo}</td>
+        <td>
+          <button class="action-btn edit-btn" onclick="editar('${prof.matricula}')">Editar</button>
+          <button class="action-btn delete-btn" onclick="eliminar('${prof.matricula}')">Eliminar</button>
+        </td>
+      </tr>`;
+  });
+}
+
+function guardarProfesor() {
+  const matricula = document.getElementById('matricula').value.trim();
+  const nombre = document.getElementById('nombre').value.trim();
+  const correo = document.getElementById('correo').value.trim();
+
+  if (!matricula || !nombre || !correo) {
+    mostrarToast('Completa todos los campos');
+    return;
+  }
+
+  const payload = { matricula, nombre, correo };
+
+  const url = editando ? `/api/profesores/${editando}` : '/api/profesores';
+  const method = editando ? 'PUT' : 'POST';
+
+  fetch(url, {
+    method: method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      mostrarToast(editando ? 'Profesor actualizado' : 'Profesor agregado');
+      editando = null;
+      document.getElementById('btnGuardar').textContent = 'Agregar Profesor';
+      limpiarFormulario();
+      cargarProfesores();
+    } else {
+      mostrarToast(data.error || 'Error al guardar');
+    }
+  });
+}
+
+function editar(matricula) {
+  const profesor = profesores.find(p => p.matricula === matricula);
+  if (profesor) {
+    document.getElementById('matricula').value = profesor.matricula;
+    document.getElementById('nombre').value = profesor.nombre;
+    document.getElementById('correo').value = profesor.correo;
+    editando = profesor.matricula;
+    document.getElementById('btnGuardar').textContent = 'Actualizar Profesor';
+  }
+}
+
+function eliminar(matricula) {
+  if (confirm('¿Eliminar este profesor?')) {
+    fetch(`/api/profesores/${matricula}`, { method: 'DELETE' })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        mostrarToast('Profesor eliminado');
+        cargarProfesores();
+      } else {
+        mostrarToast(data.error || 'Error al eliminar');
+      }
+    });
+  }
+}
+
+function limpiarFormulario() {
+  document.getElementById('matricula').value = '';
+  document.getElementById('nombre').value = '';
+  document.getElementById('correo').value = '';
+}
+
+function cargarProfesores() {
+  fetch('/api/profesores')
+    .then(res => res.json())
+    .then(data => {
+      profesores = data;
+      renderTabla();
+    });
+}
+
+window.addEventListener('DOMContentLoaded', cargarProfesores);
+</script>
+
+</body>
+
+</html>
+
