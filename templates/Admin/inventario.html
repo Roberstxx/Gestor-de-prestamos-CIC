@@ -5,258 +5,757 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Inventario</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/styles.css">
     <style>
-        .estado-activo { color: green; font-weight: bold; }
-        .estado-inactivo { color: orange; font-weight: bold; }
-        .estado-baja { color: red; font-weight: bold; }
+        :root {
+            --primary: #0057B8;
+            --secondary: #FFD700;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #c9d6ff;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container-custom {
+            max-width: 1400px;
+            margin: 20px auto;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .header-inventory {
+            background: linear-gradient(135deg, var(--primary), #003d7a);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-inventory h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0;
+        }
+
+        .btn-volver {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: var(--secondary);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            font-weight: bold;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .btn-volver:hover {
+            background-color: #e6c200;
+            transform: translateY(-2px);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 15px;
+            text-align: center;
+            transition: var(--transition);
+            border-top: 4px solid;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.total {
+            border-top-color: var(--primary);
+        }
+
+        .stat-card.activos {
+            border-top-color: var(--success);
+        }
+
+        .stat-card.inactivos {
+            border-top-color: var(--warning);
+        }
+
+        .stat-card.baja {
+            border-top-color: var(--danger);
+        }
+
+        .stat-card h5 {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .form-section {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-control-custom:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 87, 184, 0.25);
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-custom {
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #004494;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary-custom {
+            background-color: var(--secondary);
+            color: #000;
+        }
+
+        .btn-secondary-custom:hover {
+            background-color: #e6c200;
+            transform: translateY(-2px);
+        }
+
+        .table-container {
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .table-custom th {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+
+        .table-custom td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table-custom tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .table-custom tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .badge-estado {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .badge-activo {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .badge-inactivo {
+            background-color: var(--warning);
+            color: #000;
+        }
+
+        .badge-baja {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm-custom {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .btn-info-custom {
+            background-color: var(--info);
+            color: white;
+        }
+
+        .btn-danger-custom {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        /* Estilos para el modal */
+        .modal-content-custom {
+            border-radius: var(--border-radius);
+            border: none;
+            box-shadow: var(--box-shadow);
+        }
+
+        .modal-header-custom {
+            background-color: var(--primary);
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .modal-title-custom {
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-btns {
+                flex-direction: column;
+            }
+            
+            .btn-sm-custom {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-<div class="container mt-5">
-    <div class="d-flex justify-content-between mb-4">
-        <a href="/paneladmin" class="btn btn-warning">&larr; Atrás</a>
-        <h2>Inventario Centro de Cómputo</h2>
+<div class="container-custom">
+    <div class="header-inventory">
+        <button onclick="window.location.href='/PanelAdmin'" class="btn-volver">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            Volver 
+        </button>
+        <h2>Gestión de Inventario</h2>
     </div>
 
-    <!-- Tarjetas con conteo por estado -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary">
-                <div class="card-body">
-                    <h5 class="card-title">Total Equipos</h5>
-                    <p id="total-equipos" class="card-text">0</p>
-                </div>
-            </div>
+    <!-- Tarjetas de estadísticas -->
+    <div class="stats-container">
+        <div class="stat-card total">
+            <h5>Total de Equipos</h5>
+            <p id="total-equipos">0</p>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success">
-                <div class="card-body">
-                    <h5 class="card-title">Activos</h5>
-                    <p id="equipos-activos" class="card-text">0</p>
-                </div>
-            </div>
+        <div class="stat-card activos">
+            <h5>Equipos Activos</h5>
+            <p id="equipos-activos">0</p>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-warning">
-                <div class="card-body">
-                    <h5 class="card-title">Inactivos</h5>
-                    <p id="equipos-inactivos" class="card-text">0</p>
-                </div>
-            </div>
+        <div class="stat-card inactivos">
+            <h5>Equipos Inactivos</h5>
+            <p id="equipos-inactivos">0</p>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-danger">
-                <div class="card-body">
-                    <h5 class="card-title">Dados de Baja</h5>
-                    <p id="equipos-baja" class="card-text">0</p>
-                </div>
-            </div>
+        <div class="stat-card baja">
+            <h5>Equipos de Baja</h5>
+            <p id="equipos-baja">0</p>
         </div>
     </div>
 
     <!-- Formulario para agregar nuevo equipo -->
-    <form id="form-agregar" class="row g-3 mb-4">
-        <div class="col-md-2">
-            <input type="text" class="form-control" id="nombre" placeholder="Nombre" required>
-        </div>
-        <div class="col-md-2">
-            <input type="text" class="form-control" id="tipo" placeholder="Tipo" required>
-        </div>
-        <div class="col-md-2">
-            <input type="text" class="form-control" id="marca" placeholder="Marca" required>
-        </div>
-        <div class="col-md-2">
-            <input type="text" class="form-control" id="numero_serie" placeholder="Nº Serie" required>
-        </div>
-        <div class="col-md-2">
-            <input type="date" class="form-control" id="fecha" required>
-        </div>
-        <div class="col-md-2">
-            <input type="number" class="form-control" id="stock" placeholder="Stock" min="1" value="1" required>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Agregar</button>
-        </div>
-    </form>
+    <div class="form-section">
+        <form id="form-agregar">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" class="form-control-custom" placeholder="Ej. Laptop Dell" required>
+                </div>
+                <div class="form-group">
+                    <label for="tipo">Tipo</label>
+                    <input type="text" id="tipo" class="form-control-custom" placeholder="Ej. Laptop, Proyector" required>
+                </div>
+                <div class="form-group">
+                    <label for="marca">Marca</label>
+                    <input type="text" id="marca" class="form-control-custom" placeholder="Ej. Dell, HP" required>
+                </div>
+                <div class="form-group">
+                    <label for="numero_serie">Número de Serie</label>
+                    <input type="text" id="numero_serie" class="form-control-custom" placeholder="Ej. ABC123XYZ" required>
+                </div>
+                <div class="form-group">
+                    <label for="fecha">Fecha de Adquisición</label>
+                    <input type="date" id="fecha" class="form-control-custom" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock</label>
+                    <input type="number" id="stock" class="form-control-custom" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <select id="estado" class="form-control-custom" required>
+                        <option value="Disponible">Disponible</option>
+                        <option value="Prestado">Prestado</option>
+                        <option value="Baja">Baja</option>
+                    </select>
+                </div>
+            </div>
+            <div class="buttons-container">
+                <button type="submit" class="btn-custom btn-primary-custom">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                    </svg>
+                    Agregar Equipo
+                </button>
+                <button type="button" class="btn-custom btn-secondary-custom" onclick="limpiarFormulario()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z"/>
+                    </svg>
+                    Limpiar
+                </button>
+            </div>
+        </form>
+    </div>
 
-    <!-- Tabla que muestra el inventario -->
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Tipo</th>
-                <th>Marca</th>
-                <th>Serie</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th>Stock</th> <!-- Nuevo campo stock -->
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="tabla-inventario"></tbody>
-    </table>
+    <!-- Tabla de inventario -->
+    <div class="table-container">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Marca</th>
+                    <th>N° Serie</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Stock</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-inventario">
+                <!-- Los datos se cargarán dinámicamente -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Modal para editar equipo -->
 <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content modal-content-custom">
             <form id="form-editar">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar Equipo</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title modal-title-custom">Editar Equipo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="editar-id">
-                    <div class="mb-3">
-                        <label for="editar-nombre" class="form-label">Nombre</label>
-                        <input type="text" id="editar-nombre" class="form-control" required>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="editar-nombre">Nombre</label>
+                            <input type="text" id="editar-nombre" class="form-control-custom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editar-tipo">Tipo</label>
+                            <input type="text" id="editar-tipo" class="form-control-custom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editar-marca">Marca</label>
+                            <input type="text" id="editar-marca" class="form-control-custom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editar-numero_serie">N° Serie</label>
+                            <input type="text" id="editar-numero_serie" class="form-control-custom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editar-fecha">Fecha Adquisición</label>
+                            <input type="date" id="editar-fecha" class="form-control-custom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editar-stock">Stock</label>
+                            <input type="number" id="editar-stock" min="1" class="form-control-custom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editar-estado">Estado</label>
+                            <select id="editar-estado" class="form-control-custom" required>
+                                <option value="Disponible">Disponible</option>
+                                <option value="Prestado">Prestado</option>
+                                <option value="Baja">Baja</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="editar-estado" class="form-label">Estado</label>
-                        <select id="editar-estado" class="form-select">
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
-                            <option value="baja">Baja</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editar-observaciones" class="form-label">Observaciones</label>
-                        <textarea id="editar-observaciones" class="form-control"></textarea>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label for="editar-observaciones">Observaciones</label>
+                        <textarea id="editar-observaciones" class="form-control-custom" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Guardar Cambios</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-custom btn-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                        </svg>
+                        Guardar Cambios
+                    </button>
+                    <button type="button" class="btn-custom btn-secondary" data-bs-dismiss="modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z"/>
+                        </svg>
+                        Cancelar
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<!-- Toast para notificaciones -->
+<div id="toast" class="toast"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Carga los datos del inventario desde el backend y los muestra en la tabla
-    async function cargarInventario() {
+    // Variables globales
+    let editando = null;
+    const modalEditar = new bootstrap.Modal(document.getElementById('modalEditar'));
+    
+    // Función para mostrar notificaciones toast
+    function mostrarToast(mensaje, tipo = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = mensaje;
+        toast.className = 'toast';
+        toast.classList.add('show', `toast-${tipo}`);
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    
+  // Función para formatear la fecha (solo día/mes/año en español)
+function formatearFecha(fechaISO) {
+    if (!fechaISO) return 'N/A';
+    const fecha = new Date(fechaISO);
+    return fecha.toLocaleDateString('es-MX');  // Ej: 19/05/2025
+}
+
+// Carga los datos del inventario desde el backend
+async function cargarInventario() {
+    try {
         const res = await fetch('/api/inventario');
+        if (!res.ok) throw new Error('Error al cargar el inventario');
+        
         const data = await res.json();
         const tbody = document.getElementById('tabla-inventario');
         tbody.innerHTML = '';
-
-        let activos = 0, inactivos = 0, baja = 0;
-
-        data.forEach(equipo => {
-            let estadoClass = equipo.estado === 'activo' ? 'estado-activo' : equipo.estado === 'inactivo' ? 'estado-inactivo' : 'estado-baja';
-            if (equipo.estado === 'activo') activos++;
-            if (equipo.estado === 'inactivo') inactivos++;
-            if (equipo.estado === 'baja') baja++;
-
-            // Muestra los datos en cada fila, incluyendo el stock
-            tbody.innerHTML += `
+        
+        let total = 0, disponibles = 0, prestados = 0, bajas = 0;
+        
+        if (data.length === 0) {
+            tbody.innerHTML = `
                 <tr>
-                    <td>${equipo.id}</td>
-                    <td>${equipo.nombre}</td>
-                    <td>${equipo.tipo}</td>
-                    <td>${equipo.marca}</td>
-                    <td>${equipo.numero_serie}</td>
-                    <td class="${estadoClass}">${equipo.estado}</td>
-                    <td>${equipo.fecha_adquisicion}</td>
-                    <td>${equipo.stock ?? 1}</td> <!-- Mostrar stock, por defecto 1 si está ausente -->
-                    <td>
-                        <button class="btn btn-sm btn-info" onclick="abrirModalEditar(${equipo.id})">Editar</button>
-                        <button class="btn btn-sm btn-danger" onclick="eliminarEquipo(${equipo.id})">Eliminar</button>
+                    <td colspan="9" style="text-align: center; padding: 30px; color: #6c757d; font-style: italic;">
+                        No hay equipos registrados en el inventario
                     </td>
-                </tr>
-            `;
-        });
-
-        // Actualiza contadores
-        document.getElementById('total-equipos').innerText = data.length;
-        document.getElementById('equipos-activos').innerText = activos;
-        document.getElementById('equipos-inactivos').innerText = inactivos;
-        document.getElementById('equipos-baja').innerText = baja;
+                </tr>`;
+        } else {
+            data.forEach(equipo => {
+                total++;
+                if (equipo.estado === 'Disponible') disponibles++;
+                if (equipo.estado === 'Prestado') prestados++;
+                if (equipo.estado === 'Baja') bajas++;
+                
+                let estadoClass = '';
+                let estadoText = '';
+                
+                switch(equipo.estado) {
+                    case 'Disponible':
+                        estadoClass = 'badge-activo';
+                        estadoText = 'Disponible';
+                        break;
+                    case 'Prestado':
+                        estadoClass = 'badge-inactivo';
+                        estadoText = 'Prestado';
+                        break;
+                    case 'Baja':
+                        estadoClass = 'badge-baja';
+                        estadoText = 'Baja';
+                        break;
+                }
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${equipo.id}</td>
+                        <td>${equipo.nombre}</td>
+                        <td>${equipo.tipo}</td>
+                        <td>${equipo.marca || 'N/A'}</td>
+                        <td>${equipo.numero_serie || 'N/A'}</td>
+                        <td><span class="badge-estado ${estadoClass}">${estadoText}</span></td>
+                        <td>${formatearFecha(equipo.fecha_adquisicion)}</td>
+                        <td>${equipo.stock || 1}</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-custom btn-sm-custom btn-info-custom" onclick="abrirModalEditar(${equipo.id})">
+                                    Editar
+                                </button>
+                                <button class="btn-custom btn-sm-custom btn-danger-custom" onclick="eliminarEquipo(${equipo.id})">
+                                    Eliminar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+        }
+        
+        // Actualizar estadísticas
+        document.getElementById('total-equipos').textContent = total;
+        document.getElementById('equipos-activos').textContent = disponibles;
+        document.getElementById('equipos-inactivos').textContent = prestados;
+        document.getElementById('equipos-baja').textContent = bajas;
+        
+    } catch (error) {
+        mostrarToast(error.message, 'error');
     }
+}
 
-    // Maneja envío del formulario para agregar equipo
-    document.getElementById('form-agregar').addEventListener('submit', async (e) => {
-        e.preventDefault();
+    // Maneja el envío del formulario para agregar equipo
+document.getElementById('form-agregar').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const btn = e.target.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...';
+    btn.disabled = true;
+
+    try {
         const datos = {
-            nombre: nombre.value,
-            tipo: tipo.value,
-            marca: marca.value,
-            numero_serie: numero_serie.value,
-            fecha_adquisicion: fecha.value,
-            stock: parseInt(stock.value)
+            nombre: document.getElementById('nombre').value.trim(),
+            tipo: document.getElementById('tipo').value.trim(),
+            marca: document.getElementById('marca').value.trim(),
+            numero_serie: document.getElementById('numero_serie').value.trim(),
+            fecha_adquisicion: document.getElementById('fecha').value,
+            stock: parseInt(document.getElementById('stock').value) || 1,
+            estado: document.getElementById('estado').value,
+            observaciones: '',
+            sesion_id: localStorage.getItem('sesion_id')  // ✅ Añadido
         };
+
+        if (!datos.nombre || !datos.tipo || !datos.fecha_adquisicion) {
+            throw new Error('Nombre, tipo y fecha son campos obligatorios');
+        }
 
         const res = await fetch('/api/inventario', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datos)
         });
 
-        if (res.ok) {
-            cargarInventario();
-            e.target.reset();
-        } else {
-            alert('Error al agregar');
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message || 'Error al agregar equipo');
         }
-    });
 
-    // Abre el modal de edición con datos del equipo
-    function abrirModalEditar(id) {
-        fetch(`/api/inventario/${id}`)
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('editar-id').value = data.id;
-                document.getElementById('editar-nombre').value = data.nombre;
-                document.getElementById('editar-estado').value = data.estado;
-                document.getElementById('editar-observaciones').value = data.observaciones || '';
-                new bootstrap.Modal(document.getElementById('modalEditar')).show();
-            });
+        mostrarToast('Equipo agregado correctamente', 'success');
+        cargarInventario();
+        limpiarFormulario();
+
+    } catch (error) {
+        mostrarToast(error.message, 'error');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
     }
+});
 
+
+    
+    // Abre el modal de edición con datos del equipo
+    async function abrirModalEditar(id) {
+        try {
+            const res = await fetch(`/api/inventario/${id}`);
+            if (!res.ok) throw new Error('Error al cargar los datos del equipo');
+            
+            const data = await res.json();
+            
+            document.getElementById('editar-id').value = data.id;
+            document.getElementById('editar-nombre').value = data.nombre;
+            document.getElementById('editar-tipo').value = data.tipo;
+            document.getElementById('editar-marca').value = data.marca || '';
+            document.getElementById('editar-numero_serie').value = data.numero_serie || '';
+            document.getElementById('editar-fecha').value = data.fecha_adquisicion || '';
+            document.getElementById('editar-stock').value = data.stock || 1;
+            document.getElementById('editar-estado').value = data.estado || 'Disponible';
+            document.getElementById('editar-observaciones').value = data.observaciones || '';
+            
+            modalEditar.show();
+            
+        } catch (error) {
+            mostrarToast(error.message, 'error');
+        }
+    }
+    
     // Enviar cambios desde el modal de edición
     document.getElementById('form-editar').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const id = document.getElementById('editar-id').value;
-        const datos = {
-            nombre: document.getElementById('editar-nombre').value,
-            estado: document.getElementById('editar-estado').value,
-            observaciones: document.getElementById('editar-observaciones').value
-        };
-
-        const res = await fetch(`/api/inventario/${id}`, {
-            method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(datos)
-        });
-
-        if (res.ok) {
-            bootstrap.Modal.getInstance(document.getElementById('modalEditar')).hide();
-            cargarInventario();
-        } else {
-            alert('Error al editar');
-        }
-    });
-
-    // Marca equipo como dado de baja
-    async function eliminarEquipo(id) {
-        if (confirm('Confirma eliminación (marcar como baja)')) {
-            await fetch(`/api/inventario/${id}/estado`, {
+        
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
+        btn.disabled = true;
+        
+        try {
+            const id = document.getElementById('editar-id').value;
+            const datos = {
+                nombre: document.getElementById('editar-nombre').value.trim(),
+                tipo: document.getElementById('editar-tipo').value.trim(),
+                marca: document.getElementById('editar-marca').value.trim(),
+                numero_serie: document.getElementById('editar-numero_serie').value.trim(),
+                fecha_adquisicion: document.getElementById('editar-fecha').value,
+                stock: parseInt(document.getElementById('editar-stock').value) || 1,
+                estado: document.getElementById('editar-estado').value,
+                observaciones: document.getElementById('editar-observaciones').value.trim()
+            };
+            
+            if (!datos.nombre || !datos.tipo || !datos.fecha_adquisicion) {
+                throw new Error('Nombre, tipo y fecha son campos obligatorios');
+            }
+            
+            const res = await fetch(`/api/inventario/${id}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ estado: 'baja' })
+                body: JSON.stringify(datos)
             });
+            
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || 'Error al actualizar equipo');
+            }
+            
+            mostrarToast('Equipo actualizado correctamente', 'success');
+            modalEditar.hide();
             cargarInventario();
+            
+        } catch (error) {
+            mostrarToast(error.message, 'error');
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    });
+    
+    // Eliminar equipo (marcar como baja)
+    async function eliminarEquipo(id) {
+        if (confirm('¿Estás seguro de marcar este equipo como dado de baja?\nEsta acción no se puede deshacer.')) {
+            try {
+                const res = await fetch(`/api/inventario/${id}/estado`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ estado: 'Baja' })
+                });
+                
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.message || 'Error al eliminar equipo');
+                }
+                
+                mostrarToast('Equipo marcado como dado de baja', 'success');
+                cargarInventario();
+                
+            } catch (error) {
+                mostrarToast(error.message, 'error');
+            }
         }
     }
-
-    // Cargar inventario al iniciar
-    cargarInventario();
+    
+    // Limpiar formulario de agregar
+    function limpiarFormulario() {
+        document.getElementById('form-agregar').reset();
+        document.getElementById('stock').value = 1;
+        document.getElementById('estado').value = 'Disponible';
+        document.getElementById('fecha').valueAsDate = new Date();
+    }
+    
+    // Inicialización - Cargar inventario al abrir la página
+    document.addEventListener('DOMContentLoaded', () => {
+        cargarInventario();
+        // Establecer fecha actual por defecto en el formulario
+        document.getElementById('fecha').valueAsDate = new Date();
+    });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
