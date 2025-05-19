@@ -92,14 +92,30 @@
             width: 24px; /* Ícono más pequeño */
             height: 24px;
         }
+        .logout-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #ffdd00;
+    color: #000;
+    font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #e6c200;
+}
+
 
     </style>
 </head>
 <body>
-    <button class="volver-button">
-        <img src="static/icons/back.png" alt="Volver">
-        Volver
-    </button>
+    <a href="#" class="logout-btn" onclick="cerrarSesion()" title="Cerrar sesión">Cerrar sesión</a>
+
 
     <h1>Panel de Administración</h1>
     <div class="icon-container">
@@ -116,21 +132,20 @@
         <p>Historial</p>
     </div>
 </a>
+        <a href="/admin/GestiosProfesores" style="text-decoration: none; color: inherit;">
+  <div class="icon-box">
+      <img src="static/icons/perfiles.png" alt="Maestros">
+      <p>Maestros</p>
+  </div>
+</a>
 
-
-
-        <div class="icon-box">
-            <img src="static/icons/reportes.png" alt="Reportes">
-            <p>Reportes</p>
-        </div>
-        <div class="icon-box">
-            <img src="static/icons/bitacora.png" alt="Bitácora">
-            <p>Bitácora</p>
-        </div>
-        <div class="icon-box">
-            <img src="static/icons/perfiles.png" alt="Perfiles">
-            <p>Perfiles</p>
-        </div>
     </div>
+    <script>
+  function cerrarSesion() {
+    localStorage.clear(); // Borra todo el almacenamiento local (admin_id, usuario_id, etc.)
+    window.location.href = '/login'; // Redirige al login
+  }
+</script>
+
 </body>
 </html>
