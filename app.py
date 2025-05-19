@@ -27,6 +27,11 @@ def conectar_bd():
 def index():
     return render_template('login.html')
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+
 @app.route('/pendientes')
 def pendientes():
     return render_template('User/pendientesDV.html')
@@ -51,6 +56,11 @@ def prestamos():
 @app.route('/PanelAdmin')
 def admin_dashboard():
     return render_template('Admin/PanelAdmin.html')
+
+@app.route('/admin/GestiosProfesores')
+def gestios_profesores():
+    return render_template('Admin/GestiosProfesores.html')
+
 
 @app.route('/User/devueltos')
 def mostrar_devueltos():
@@ -610,6 +620,72 @@ def devolver_prestamo(prestamo_id):
     finally:
         cursor.close()
         conexion.close()
+        
+    #---api profesores
+    
+    # Obtener todos los profesores
+@app.route('/api/profesores', methods=['GET'])
+def obtener_profesores():
+    conexion = conectar_bd()
+    cursor = conexion.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM profesores")
+    profesores = cursor.fetchall()
+    cursor.close()
+    conexion.close()
+    return jsonify(profesores)
+
+# Agregar un nuevo profesor
+@app.route('/api/profesores', methods=['POST'])
+def agregar_profesor():
+    data = request.json
+    conexion = conectar_bd()
+    cursor = conexion.cursor()
+    try:
+        cursor.execute("""
+            INSERT INTO profesores (matricula, nombre, correo)
+            VALUES (%s, %s, %s)
+        """, (data['matricula'], data['nombre'], data['correo']))
+        conexion.commit()
+        return jsonify({'success': True})
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'error': str(err)}), 400
+    finally:
+        cursor.close()
+        conexion.close()
+
+# Actualizar un profesor
+@app.route('/api/profesores/<matricula>', methods=['PUT'])
+def actualizar_profesor(matricula):
+    data = request.json
+    conexion = conectar_bd()
+    cursor = conexion.cursor()
+    try:
+        cursor.execute("""
+            UPDATE profesores SET nombre=%s, correo=%s WHERE matricula=%s
+        """, (data['nombre'], data['correo'], matricula))
+        conexion.commit()
+        return jsonify({'success': True})
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'error': str(err)}), 400
+    finally:
+        cursor.close()
+        conexion.close()
+
+# Eliminar un profesor
+@app.route('/api/profesores/<matricula>', methods=['DELETE'])
+def eliminar_profesor(matricula):
+    conexion = conectar_bd()
+    cursor = conexion.cursor()
+    try:
+        cursor.execute("DELETE FROM profesores WHERE matricula = %s", (matricula,))
+        conexion.commit()
+        return jsonify({'success': True})
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'error': str(err)}), 400
+    finally:
+        cursor.close()
+        conexion.close()
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
