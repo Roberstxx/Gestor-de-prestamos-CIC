@@ -399,39 +399,23 @@ def agregar_equipo():
         cursor.close()
         conexion.close()
 
-@app.route('/api/inventario/<int:id>', methods=['PUT'])
-def actualizar_equipo(id):
+@app.route('/api/inventario/<int:id>', methods=['GET'])
+def obtener_equipo(id):
     conexion = conectar_bd()
     if not conexion:
         return jsonify({'success': False, 'message': 'Error al conectar a la base de datos'}), 500
 
-    data = request.json
-    nombre = data.get('nombre')
-    tipo = data.get('tipo')
-    marca = data.get('marca')
-    numero_serie = data.get('numero_serie')
-    fecha_adquisicion = data.get('fecha_adquisicion')
-    stock = data.get('stock')
-    estado = data.get('estado')
-    observaciones = data.get('observaciones', '')
-
-    cursor = conexion.cursor()
+    cursor = conexion.cursor(dictionary=True)
     try:
-        cursor.execute("""
-            UPDATE inventario
-            SET nombre = %s, tipo = %s, marca = %s, 
-                numero_serie = %s, fecha_adquisicion = %s,
-                stock = %s, estado = %s, observaciones = %s
-            WHERE id = %s
-        """, (nombre, tipo, marca, numero_serie, fecha_adquisicion, 
-              stock, estado, observaciones, id))
-        
-        conexion.commit()
-        return jsonify({'success': True, 'message': 'Equipo actualizado correctamente'}), 200
+        cursor.execute("SELECT * FROM inventario WHERE id = %s", (id,))
+        equipo = cursor.fetchone()
+        if equipo:
+            return jsonify(equipo)
+        else:
+            return jsonify({'success': False, 'message': 'Equipo no encontrado'}), 404
     except mysql.connector.Error as err:
-        conexion.rollback()
         print("Error SQL:", err)
-        return jsonify({'success': False, 'message': 'Error al actualizar equipo'}), 500
+        return jsonify({'success': False, 'message': 'Error al obtener equipo'}), 500
     finally:
         cursor.close()
         conexion.close()
@@ -687,10 +671,6 @@ def eliminar_profesor(matricula):
     finally:
         cursor.close()
         conexion.close()
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
 if __name__ == '__main__':
