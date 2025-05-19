@@ -369,58 +369,62 @@
     }
 
     function enviarFormulario() {
-      const profesor_id = document.getElementById('profesor_id')?.value;
-      const tipo_area = document.getElementById('tipo-area').value;
-      const edificio = document.getElementById('edificio').value;
-      const area_id = document.getElementById('area').value;
-      const usuario_id = localStorage.getItem('usuario_id');
-      const admin_id = localStorage.getItem('admin_id');
+  const sesion_id = localStorage.getItem('sesion_id');
+  const tipo_area = document.getElementById('tipo-area').value;
+  const edificio = document.getElementById('edificio').value;
+  const area_id = document.getElementById('area').value;
+  const profesor_id = document.getElementById('profesor_id')?.value;
 
-      if (!usuario_id || !admin_id) return mostrarNotificacion("No hay sesión iniciada.", 'warning');
-      if (!profesor_id || !tipo_area || !edificio || !area_id) return mostrarNotificacion("Completa todos los campos.", 'warning');
+  if (!sesion_id) return mostrarNotificacion("No hay sesión iniciada.", 'warning');
+  if (!profesor_id || !tipo_area || !edificio || !area_id)
+    return mostrarNotificacion("Completa todos los campos.", 'warning');
 
-      const equipos = document.querySelectorAll('.equipment-entry');
-      if (!equipos.length) return mostrarNotificacion("Agrega al menos un equipo.", 'warning');
+  const equipos = document.querySelectorAll('.equipment-entry');
+  if (!equipos.length)
+    return mostrarNotificacion("Agrega al menos un equipo.", 'warning');
 
-      let datosValidos = false;
-      equipos.forEach(entry => {
-        const id = entry.querySelector('.equipo').value;
-        const cant = entry.querySelector('.cantidad').value;
-        if (id && cant > 0) datosValidos = true;
-      });
-      if (!datosValidos) return mostrarNotificacion("Verifica cantidades válidas.", 'warning');
+  let datosValidos = false;
+  equipos.forEach(entry => {
+    const id = entry.querySelector('.equipo').value;
+    const cant = entry.querySelector('.cantidad').value;
+    if (id && cant > 0) datosValidos = true;
+  });
 
-      equipos.forEach(entry => {
-        const id = entry.querySelector('.equipo').value;
-        const cant = entry.querySelector('.cantidad').value;
-        if (id && cant > 0) {
-          const formData = new FormData();
-          formData.append('usuario_id', usuario_id);
-          formData.append('admin_id', admin_id);
-          formData.append('profesor_id', profesor_id);
-          formData.append('tipo_area', tipo_area);
-          formData.append('edificio', edificio);
-          formData.append('area_id', area_id);
-          formData.append('equipo_id', id);
-          formData.append('cantidad', cant);
+  if (!datosValidos)
+    return mostrarNotificacion("Verifica cantidades válidas.", 'warning');
 
-          fetch('/registrar_prestamo', {
-            method: 'POST',
-            body: formData
-          })
-            .then(res => res.json())
-            .then(data => {
-              if (data.success) {
-                mostrarNotificacion("Préstamo registrado 🎉", 'success');
-                setTimeout(() => location.reload(), 2000);
-              } else {
-                mostrarNotificacion("Error: " + data.message, 'error');
-              }
-            })
-            .catch(() => mostrarNotificacion("Error al registrar.", 'error'));
-        }
-      });
+  equipos.forEach(entry => {
+    const id = entry.querySelector('.equipo').value;
+    const cant = entry.querySelector('.cantidad').value;
+
+    if (id && cant > 0) {
+      const formData = new FormData();
+      formData.append('sesion_id', sesion_id);
+      formData.append('profesor_id', profesor_id);
+      formData.append('tipo_area', tipo_area);
+      formData.append('edificio', edificio);
+      formData.append('area_id', area_id);
+      formData.append('equipo_id', id);
+      formData.append('cantidad', cant);
+
+      fetch('/registrar_prestamo', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            mostrarNotificacion("Préstamo registrado 🎉", 'success');
+            setTimeout(() => location.reload(), 2000);
+          } else {
+            mostrarNotificacion("Error: " + data.message, 'error');
+          }
+        })
+        .catch(() => mostrarNotificacion("Error al registrar.", 'error'));
     }
+  });
+}
+
 
     // Autocompletar profesor desde matrícula
     document.getElementById('matricula').addEventListener('blur', () => {
