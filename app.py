@@ -254,14 +254,18 @@ def registrar_prestamo():
         return jsonify({'success': False, 'message': 'Error al conectar a la base de datos'}), 500
 
     cursor = conexion.cursor()
-    usuario_id = request.form.get('usuario_id')
 
-    # Obtener sesión del estudiante
-    cursor.execute("SELECT sesion_id FROM usuarios WHERE id = %s", (usuario_id,))
-    sesion_result = cursor.fetchone()
-    if not sesion_result:
+    sesion_id = request.form.get('sesion_id')
+
+    if not sesion_id:
+        return jsonify({'success': False, 'message': 'Sesión no proporcionada'}), 400
+
+    # Obtener usuario que pertenece a esta sesión (rol student)
+    cursor.execute("SELECT id FROM usuarios WHERE sesion_id = %s AND rol = 'student' LIMIT 1", (sesion_id,))
+    user_result = cursor.fetchone()
+    if not user_result:
         return jsonify({'success': False, 'message': 'Usuario no encontrado'}), 404
-    sesion_id = sesion_result[0]
+    usuario_id = user_result[0]
 
     # Buscar el administrador correspondiente a esa sesión
     cursor.execute("SELECT id FROM usuarios WHERE rol = 'admin' AND sesion_id = %s LIMIT 1", (sesion_id,))
@@ -281,7 +285,11 @@ def registrar_prestamo():
     try:
         # Verificar disponibilidad del equipo
         cursor.execute("SELECT stock FROM inventario WHERE id = %s", (inventario_id,))
-        stock = cursor.fetchone()[0]
+        result = cursor.fetchone()
+        if not result:
+            return jsonify({'success': False, 'message': 'Equipo no encontrado'}), 404
+
+        stock = result[0]
         if int(cantidad) > stock:
             return jsonify({'success': False, 'message': 'No hay suficiente stock disponible'}), 400
 
