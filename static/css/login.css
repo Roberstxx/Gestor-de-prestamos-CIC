@@ -301,3 +301,41 @@ body{
 #adminKeyField > input[type="text"]:focus {
     border-color: #ecd822; /* Un color similar al botón activo */
 }
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem;
+    }
+
+    input, select, button {
+        font-size: 0.95rem;
+    }
+
+    h1 {
+        font-size: 1.7rem;
+    }
+}
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #323232;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 9999;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .toast.success { background-color: #28a745; }
+  .toast.error { background-color: #dc3545; }
+  .toast.warning { background-color: #ffc107; color: #000; }
