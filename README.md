@@ -48,7 +48,7 @@ Sistema web para la **gestión de préstamos y devoluciones de equipos de cómpu
 
 ## 📸 Capturas del sistema
 
-> (Aquí puedes subir imágenes como: login, módulo de préstamos, tarjetas de devoluciones, panel admin, etc.)
+
 
 ---
 
