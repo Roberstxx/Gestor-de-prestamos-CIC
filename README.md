@@ -123,4 +123,4 @@ Actualmente en uso funcional con módulos completos. Se siguen aplicando mejoras
 
 ## 📄 Licencia
 
-Proyecto de uso académico. Sin licencia comercial aún definida.
+
