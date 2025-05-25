@@ -428,6 +428,23 @@ def obtener_equipo(id):
         cursor.close()
         conexion.close()
 
+# API: eliminar equipo
+@app.route('/api/inventario/<int:id>', methods=['DELETE'])
+def api_eliminar_equipo(id):
+    conexion = conectar_bd()
+    cursor = conexion.cursor()
+    try:
+        cursor.execute("DELETE FROM inventario WHERE id = %s", (id,))
+        conexion.commit()
+        return jsonify({'success': True}), 200
+    except Exception as e:
+        conexion.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conexion.close()
+
+
 # -------------------- API DATOS --------------------
 @app.route('/api/tipos_area')
 def api_tipos_area():
